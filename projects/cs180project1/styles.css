@@ -1,5 +1,5 @@
 
-/* Courtesy of 
+/* html css specifically is a courtesy of 
 https://stackoverflow.com/questions/78169850/how-to-align-a-logo-on-the-left-and-navigation-on-the-right-using-html-and-css 
 */
 
@@ -121,6 +121,7 @@ li {
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
+    text-align: center;
     margin: 0px 20px 20px;
     padding: 20px;
     background-color: #f0f0f0;
@@ -154,4 +155,7 @@ li {
         height: 10em;
     }
     
+    .sidebar ul {
+        padding-inline-start: 0px;
+    }
 }

@@ -1,0 +1,176 @@
+
+/* Courtesy of 
+https://stackoverflow.com/questions/78169850/how-to-align-a-logo-on-the-left-and-navigation-on-the-right-using-html-and-css 
+*/
+html {
+  box-sizing: border-box;
+  font-family:
+    /* Newer browsers */
+    system-ui,
+    /* Safari for OS X and iOS (San Francisco) */
+    -apple-system,
+    /* Chrome < 56 for OS X (San Francisco) */
+    BlinkMacSystemFont,
+    /* Windows */
+    'Segoe UI',
+    /* Android */
+    Roboto,
+    /* Basic web fallback */
+    'Helvetica Neue',
+    Helvetica,
+    Arial,
+    sans-serif,
+    /* Emoji fonts */
+    'Apple Color Emoji',
+    'Segoe UI Emoji',
+    'Segoe UI Symbol',
+    'Noto Color Emoji';
+  font-size: 1em;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+  
+}
+
+:root {
+/* Colors */
+--ebony-clay: #1f2937;
+--ebony-clay-translucent: rgba(31, 41, 55, 0.2);
+--snow-drift: #F9FAF8;
+--athens-gray: #E5E7EB;
+--dodger-blue: #3882f6;
+--bombay: #b6b8bc;
+
+
+/* Font settings */
+--system-fontSize-main: 48px;
+--system-fontWeight-header: 900;
+--system-fontSize-secondary: 18px;
+--system-fontSize-logo: 24px;
+--system-fontSize-infoHeader: 36px;
+--system-fontWeight-infoHeader: 900;
+--system-fontSize-quoteText: 36px;
+--system-fontWeight-quoteText: 100;
+
+/*UI Colors */
+--system-color-main-background: var(--ebony-clay);
+--system-color-main-background-alt: var(--snow-drift);
+--system-color-header: var(--ebony-clay);
+--system-color-quote-background: var(--athens-gray);
+--system-color-quote: var(--ebony-clay);
+
+--system-fontColor-main: var(--snow-drift);
+--system-fontColor-second: var(--athens-gray);
+
+--button-color-action: var(--dodger-blue);
+--button-color-border: var(--system-color-main-background-alt);
+
+--link-color-hover: var(--bombay)
+}
+
+html,
+body {
+height: 100%;
+}
+
+body {
+display: flex;
+flex-direction: column;
+margin: 0;
+padding: 0;
+font-size: 1rem;
+font-family: 'Courier New', Courier, monospace;
+line-height: 1.5;
+color: var(--system-color-main-background);
+background-color: var(--system-color-main-background-alt)
+}
+
+ul {
+list-style-type: none;
+padding: 0;
+margin: 0;
+}
+
+li {
+padding: 0;
+margin: 0;
+text-align: right;
+list-style-type: none;
+}
+
+
+a {
+display: inline-block;
+text-decoration: none;
+color: inherit;
+transition-duration: 0.5s;
+}
+
+a:hover {
+  color: var(--dodger-blue);
+}
+
+p {
+margin: 0;
+padding: 0;
+}
+
+.header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-top: 0px;
+padding-top: 1em;
+padding-left: 2%;
+padding-bottom: 1em;
+}
+
+.title {
+font-size: 125%;
+padding-right: 1.5em;
+font-weight: bold;
+}
+
+.nav-links {
+display: flex;
+}
+
+.nav-links-list {
+display: flex;
+justify-content: flex-end;
+align-self: center;
+gap: 1.75em;
+/* padding: 0 2%; */
+}
+
+.nav-links-list li:last-child {
+margin-right: 1em;
+}
+
+.main-container {
+display: flex;
+flex-direction: column;
+flex: 1 1 auto;
+margin: 1em;
+padding: 1em;
+}
+
+.intro {
+display: flex;
+flex-direction: column;
+justify-content: flex-start;
+text-align: center;
+}
+
+footer {
+flex-shrink: 0px;
+text-align: center;
+width: 100%;
+padding: 1em;
+margin-left: auto;
+margin-right: auto;
+background-color: var(--bombay);
+}

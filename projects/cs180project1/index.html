@@ -10,7 +10,7 @@
     <div class="main-container">
         <div class="heading">
             <h1>CS 180 Project 1</h1>
-            <h2>Images of the Russian Empire: Colorizing the Prokudin-Gorskii photo collection</h2>
+            <h2>Images of the Russian Empire: Colorizing the Prokudin-Gorskii Photo Collection</h2>
             <h3>Ayra Jafri, Fall 2024</h3>
             <!-- <h3>September 9th, 2024</h3> -->
         </div>
@@ -18,47 +18,404 @@
             <div class="sidebar">
                 <h3>Table of Contents</h3>
                 <ul>
-                    <li><a href="#intro">Introduction</a></li>
-                    <li><a href="#approach">Approach</a></li>
-                    <li><a href="#results">Results</a></li>
-                    <li><a href="#bells">Bells & Whistles</a></li>
+                    <li><a href="#intro">Project Overview</a></li>
+                    <li><a href="#approach">Exhaustive Approach</a></li>
+                    <li><a href="#results">Image Pyramid Approach</a></li>
+                    <li><a href="#bells">Bells & Whistles</a>
+                        <!-- <ul class="">
+                            <li><a href="#edge">Edge Filtering</a></li>
+                            <li><a href="#contrast">Auto-Contrast</a></li>
+                        </ul> -->
+                    </li>
                 </ul>
             </div>
             <div class="main-content">
-                <h3>Project Overview</h3>
-                <p>Paragraph 1 
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Laboriosam cupiditate recusandae modi, repudiandae culpa dignissimos laudantium enim aperiam. Voluptatibus nam maxime sunt corporis facere voluptate doloremque, vero in. Ab, repudiandae?
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam atque optio, esse veritatis iure ratione rerum soluta cupiditate officiis cumque sequi reprehenderit perferendis nihil, laborum minus nisi eum repellendus voluptatibus.
-                </p>
-                <div class="image-grid">
-                    <!-- add images (in containers) here -->
+
+                <!-- Project Overview -->
+                <div class="overview">
+                    <h3 id="intro">Project Overview</h3>
+                    <p>
+                        Sergei Mikhailovich Prokudin-Gorskii (1863-1944), a pioneer in color photography, traveled throughout the Russian empire in the early twentieth century to capture as much of Russian early as possible through three-image color photography. Over three thousand photographs were taken, each one represented as three RGB glass plate negatives.
+                    </p>
+                    <p>
+                        The goal of this project is to take the digitized glass plate negatives, separate them into red, green, and blue channels, and align them as accurately as possible so they form a single RGB image with as few visual artifacts as possible.
+
+                    </p>
+                    <div class="image-grid" height="350px">
+                        <div class="grid-item">
+                            <img src="./images/cathedral.jpg" width="200px">
+                            <figcaption>Example of a digital glass plate negative.</figcaption>
+                        </div>
+                        <div class="grid-item">
+                            <img src="./images/monastery.jpg" width="200px">
+                            <figcaption>wowza!</figcaption>
+                    </div>
+                </div>
+                
+                <br>
+
+                <!-- Exhaustive Approach -->
+                <div class="exh-approach">
+                    <h3 id="approach">Exhaustive Approach</h3>
+                    <p>
+                        In order to accomplish this, we start with a simple approach that works best on small image sizes (around 300px by 300px or less). We first load in our grayscale digitized plate image and split it into three separate images, each one representing the R, G, and B channels. From here, we crop the width and height of each plate by a set amount (15% for this image set) to crop out image borders, which can negatively impact alignment attempts.
+                    </p>
+                    <p>
+                        Now, we exhaustively search over a set window of possible displacements, using the blue channel as the base plate and sliding the red/green plates over with respect to each possible displacement. For this implementation, a search window of [-15, 15] was found to be sufficient. To determine which (x, y) displacement is best, we choose and score how well the images match with one of four scoring metrics: Euclidean distance (SSD), normalized cross-correlation (NCC), mean squared error (MSE), and structural similarity (SSIM).
+
+                    </p>
+                    <p>
+                        Through testing, we found SSIM to be the most accurate scoring metric, although it is the slowest as well, taking up to 15-30 seconds on larger images (which will be discussed in the section below). Although NCC is less accurate than SSIM, this can be mitigated through border cropping and edge detection filters (as discussed in the Bells and Whistles section). Thus, NCC is the optimal scoring metric, as it can perform just as accurately as SSIM and faster (at most 3 seconds on larger images).
+                    </p>
+                    <p>
+                        Once the optimal displacement vectors are found for the red and green plates, we align them accordingly onto the red plate and combine the channels to form a single image.
+                    </p>
+                    <p>
+                        Pictured below are comparisons between the unaligned plates and the aligned plates.
+                    </p>
+
+                    <div class="image-grid">
+                        <div class="grid-item">
+                            <img src="./images/cathedral-noAlign.jpg" width="300px">
+                            <figcaption>Unaligned photo</figcaption>
+                        </div>
+                        <div class="grid-item">
+                            <img src="./images/cathedral-exhaustive-euclid.jpg" width="300px">
+                            <figcaption>Best SSD alignment</figcaption>
+                            <figcaption>R-shift vector: </figcaption>
+                            <figcaption>G-shift vector: </figcaption>
+                        </div>
+                        <div class="grid-item">
+                            <img src="./images/cathedral-exhaustive-ncc.jpg" width="300px">
+                            <figcaption>Best NCC alignment</figcaption>
+                            <figcaption>R-shift vector: </figcaption>
+                            <figcaption>G-shift vector: </figcaption>
+                        </div>
+                        <div class="grid-item">
+                            <img src="./images/cathedral-exhaustive-ssim.jpg" width="300px">
+                            <figcaption>Best SSIM alignment</figcaption>
+                            <figcaption>R-shift vector: </figcaption>
+                            <figcaption>G-shift vector: </figcaption>
+                        </div>
+                    </div>
+                    <br>
+
+                    <div class="image-grid">
+                        <div class="grid-item">
+                            <img src="./images/monastery-noAlign.jpg" width="300px">
+                            <figcaption>Unaligned</figcaption>
+                        </div>
+                        <div class="grid-item">
+                            <img src="./images/monastery-exhaustive-euclid.jpg" width="300px">
+                            <figcaption>Best SSD alignment</figcaption>
+                            <figcaption>R-shift vector: </figcaption>
+                            <figcaption>G-shift vector: </figcaption>
+                        </div>
+                        <div class="grid-item">
+                            <img src="./images/monastery-exhaustive-ncc.jpg" width="300px">
+                            <figcaption>Best NCC alignment</figcaption>
+                            <figcaption>R-shift vector: </figcaption>
+                            <figcaption>G-shift vector: </figcaption>
+                        </div>
+                        <div class="grid-item">
+                            <img src="./images/monastery-exhaustive-ssim.jpg" width="300px">
+                            <figcaption>Best SSIM alignment</figcaption>
+                            <figcaption>R-shift vector: </figcaption>
+                            <figcaption>G-shift vector: </figcaption>
+                        </div>
+                    </div>
+                    <br>
+
+                    <div class="image-grid">
+
+                        <div class="grid-item">
+                            <img src="./images/tobolsk-noAlign.jpg" width="300px">
+                            <figcaption>Unaligned</figcaption>
+                        </div>
+
+                        <div class="grid-item">
+                            <img src="./images/tobolsk-exhaustive-euclid.jpg" width="300px">
+                            <figcaption>Best SSD alignment</figcaption>
+                            <figcaption>R-shift vector: </figcaption>
+                            <figcaption>G-shift vector: </figcaption>
+                        </div>
+                        <div class="grid-item">
+                            <img src="./images/tobolsk-exhaustive-ncc.jpg" width="300px">
+                            <figcaption>Best NCC alignment</figcaption>
+                            <figcaption>R-shift vector: </figcaption>
+                            <figcaption>G-shift vector: </figcaption>
+                        </div>
+                        <div class="grid-item">
+                            <img src="./images/tobolsk-exhaustive-ssim.jpg" width="300px">
+                            <figcaption>Best SSIM alignment</figcaption>
+                            <figcaption>R-shift vector: </figcaption>
+                            <figcaption>G-shift vector: </figcaption>
+                        </div>
+                    </div>
                 </div>
                 <br>
-                
-                <h3 id="approach">Approach</h3>
-                <p>Paragraph 2
-                    Lorem ipsum dolor, sit amet consectetur adipisicing elit. Laudantium quod quisquam necessitatibus minima repudiandae eveniet, dolores tempore totam alias nesciunt illo ex, iusto amet qui perferendis accusantium maiores ipsum! Quam!
-                </p>
-                <p>
-                    Paragraph 3 Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat quisquam officiis aspernatur soluta hic accusantium facilis veritatis et consequatur. Impedit delectus nulla maxime, nesciunt voluptates incidunt quo nobis tempora nam.
-                </p>
-                
+
+                <!-- Image Pyramid Approach -->
+                 <div class="pyr-approach">
+                    <h3 id="results">Image Pyramid Approach</h3>
+                    <p>
+                        For larger images, the above approach will take far too long due to the number of computations needed (many images in the data set are at least 3000px by 3000px). Thus, in order to speed up the displacement search, we incorporate a Gaussian image pyramid in our search. An image pyramid allows us to represent the image at scales of two, where the Nth level of the pyramid contains the original image scaled down by a factor of 2^n. A Gaussian image pyramid is identical, except each image in the pyramid’s levels are gaussian blurred. This allows us to use recursion to incorporate Gaussian image pyramid search with our exhaustive search approach from before. 
+                    </p>
+                    <p>
+                        For a simple explanation, the image pyramid algorithm takes in the best displacement vector from the previous recursive level and an image that is twice the size from the previous level (as we scale the image down by ½ upon each level). We scale the displacement vector by 2, perform exhaustive search centered at the displacement vector, and finally return the new displacement vector. 
+                    </p>
+                    <p>
+                        The recursive algorithm itself takes in a base image and the image we want the displacement shift for. Depending on whether edge filtering is enabled (see the Bells and Whistles section below), we apply the respective edge filter to both images. We then apply our image pyramid search algorithm as described above, and retrieve the best shift for the given plate.
+                    </p>
+                    <p>
+                        This allows us to process larger images in the dataset far faster, from an average of 30+ minutes per image with the exhaustive approach down to an average of  around 1.5 minutes per image with the recursive image pyramid approach.
+                    </p>
+                    <p>
+                        Pictured below are comparisons between the unaligned plates and the aligned plates.
+                    </p>
+                    <br>
+                    
+                    <div class="image-grid">
+                            <div class="grid-item">
+                                <img src="./images/train-noAlign.jpg" width="500px">
+                                <figcaption>Unaligned photo</figcaption>
+                            </div>
+                            <div class="grid-item">
+                                <img src="./images/train-recursive-ncc-sobel.jpg" width="500px">
+                                <figcaption>NCC + Sobel</figcaption>
+                                <figcaption>R-shift vector: </figcaption>
+                                <figcaption>G-shift vector: </figcaption>
+                            </div>
+
+                        <div class="grid-item">
+                            <img src="./images/three_generations-noAlign.jpg" width="500px">
+                            <figcaption>Unaligned photo</figcaption>
+                        </div>
+                        <div class="grid-item">
+                            <img src="./images/three_generations-recursive-ncc-sobel.jpg" width="500px">
+                            <figcaption>NCC + Sobel</figcaption>
+                            <figcaption>R-shift vector: </figcaption>
+                            <figcaption>G-shift vector: </figcaption>
+                        </div>
+                    </div>
+                    <br>
+
+                    <div class="image-grid">
+                        <div class="grid-item">
+                            <img src="./images/self_portrait-noAlign.jpg" width="500px">
+                            <figcaption>Unaligned photo</figcaption>
+                        </div>
+                        <div class="grid-item">
+                            <img src="./images/self_portrait-recursive-ncc-sobel.jpg" width="500px">
+                            <figcaption>NCC + Sobel</figcaption>
+                            <figcaption>R-shift vector: </figcaption>
+                            <figcaption>G-shift vector: </figcaption>
+                        </div>
+                        
+                        <div class="grid-item">
+                            <img src="./images/sculpture-noAlign.jpg" width="500px">
+                            <figcaption>Unaligned photo</figcaption>
+                        </div>
+                        <div class="grid-item">
+                            <img src="./images/sculpture-recursive-ncc-sobel.jpg" width="500px">
+                            <figcaption>NCC + Sobel</figcaption>
+                            <figcaption>R-shift vector: </figcaption>
+                            <figcaption>G-shift vector: </figcaption>
+                        </div>
+
+                    </div>
+                    <br>
+
+                    <div class="image-grid">
+                        <div class="grid-item">
+                            <img src="./images/onion_church-noAlign.jpg" width="500px">
+                            <figcaption>Unaligned photo</figcaption>
+                        </div>
+                        <div class="grid-item">
+                            <img src="./images/onion_church-recursive-ncc-sobel.jpg" width="500px">
+                            <figcaption>NCC + Sobel</figcaption>
+                            <figcaption>R-shift vector: </figcaption>
+                            <figcaption>G-shift vector: </figcaption>
+                        </div>
+
+                        <div class="grid-item">
+                            <img src="./images/melons-noAlign.jpg" width="500px">
+                            <figcaption>Unaligned photo</figcaption>
+                        </div>
+                        <div class="grid-item">
+                            <img src="./images/melons-recursive-ncc-sobel.jpg" width="500px">
+                            <figcaption>NCC + Sobel</figcaption>
+                            <figcaption>R-shift vector: </figcaption>
+                            <figcaption>G-shift vector: </figcaption>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="image-grid">
+
+                        <div class="grid-item">
+                            <img src="./images/lady-noAlign.jpg" width="500px">
+                            <figcaption>Unaligned photo</figcaption>
+                        </div>
+                        <div class="grid-item">
+                            <img src="./images/lady-recursive-ncc-sobel.jpg" width="500px">
+                            <figcaption>NCC + Sobel</figcaption>
+                            <figcaption>R-shift vector: </figcaption>
+                            <figcaption>G-shift vector: </figcaption>
+                        </div>
+
+                        <div class="grid-item">
+                            <img src="./images/icon-noAlign.jpg" width="500px">
+                            <figcaption>Unaligned photo</figcaption>
+                        </div>
+                        <div class="grid-item">
+                            <img src="./images/icon-recursive-ncc-sobel.jpg" width="500px">
+                            <figcaption>NCC + Sobel</figcaption>
+                            <figcaption>R-shift vector: </figcaption>
+                            <figcaption>G-shift vector: </figcaption>
+                        </div>
+                    </div>
+                    <br>
+
+                    <div class="image-grid">
+                        <div class="grid-item">
+                            <img src="./images/harvesters-noAlign.jpg" width="500px">
+                            <figcaption>Unaligned photo</figcaption>
+                        </div>
+                        <div class="grid-item">
+                            <img src="./images/harvesters-recursive-ncc-sobel.jpg" width="500px">
+                            <figcaption>NCC + Sobel</figcaption>
+                            <figcaption>R-shift vector: </figcaption>
+                            <figcaption>G-shift vector: </figcaption>
+                        </div>
+
+                        <div class="grid-item">
+                            <img src="./images/emir-noAlign.jpg" width="500px">
+                            <figcaption>Unaligned photo</figcaption>
+                        </div>
+                        <div class="grid-item">
+                            <img src="./images/emir-recursive-ncc-sobel.jpg" width="500px">
+                            <figcaption>NCC + Sobel</figcaption>
+                            <figcaption>R-shift vector: </figcaption>
+                            <figcaption>G-shift vector: </figcaption>
+                        </div>
+
+                        <div class="grid-item">
+                            <img src="./images/church-noAlign.jpg" width="500px">
+                            <figcaption>Unaligned photo</figcaption>
+                        </div>
+                        <div class="grid-item">
+                            <img src="./images/church-recursive-ncc-sobel.jpg" width="500px">
+                            <figcaption>NCC + Sobel</figcaption>
+                            <figcaption>R-shift vector: </figcaption>
+                            <figcaption>G-shift vector: </figcaption>
+                        </div>
+                    </div>
+
+                    </div>
+                </div>
                 <br>
-                <h3 id="results">Results</h3>
-                <p>Paragraph 4
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero, a nihil illum ipsum iusto quisquam est beatae, nulla fugit sint, nostrum magnam deserunt facere? Labore officiis quisquam blanditiis quae. Quod.
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse corporis et ratione, veniam magnam ab impedit omnis sequi, labore reprehenderit error fuga repudiandae obcaecati iure consectetur pariatur repellat aspernatur fugiat?
-                </p>
-                
-                <br>
-                <h3 id="bells">Bells & Whistles</h3>
-                <p>Paragraph 5
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corrupti quae sequi, ipsa alias dolore eveniet cupiditate fugit inventore aliquam rerum possimus, repellendus quam? Praesentium id illum aliquam tempore beatae quia!
-                    Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sit quae harum, unde veritatis doloribus, quia temporibus quam magnam possimus perspiciatis eligendi ea optio maxime adipisci? Et libero magnam ab quas!
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis beatae incidunt porro sunt nisi in, obcaecati ea voluptatem eos odio, impedit id molestias ipsam harum modi voluptatibus exercitationem. Fugit, sunt?
-                </p>
+
+
+                 <!-- Bells and Whistles -->
+                <div class="bells-whistles">
+                    <h3 id="bells">Bells & Whistles</h3>
+                    <h4>Edge Filtering</h4>
+                    <p>
+                        In order to avoid the lengthy cost of using SSIM as a scoring metric, I decided to use edge detection filters on each channel before searching for optimal displacements. This way, we don’t have to rely on RGB similarity to match plates, which can cause issues if one plate is severely misaligned from the others. I tested two different filters, the Sobel Edge filter and the Canny Edge filter, with the NCC scoring metric to determine which produces the fastest, most accurate results across all images. With this imageset, the Sobel edge filter in conjunction with the NCC scoring metric achieved the fastest and most accurate results.
+                    </p>
+                    <p>
+                        Pictured below is an example of an image correctly aligned after applying the Sobel edge filter and the NCC scoring metric.
+                    </p>
+
+                    <div class="image-grid">
+                        <div class="grid-item">
+                            <img src="./images/emir-recursive-ncc.jpg" width="500px">
+                            <figcaption>Only NCC</figcaption>
+                        </div>
+                        <div class="grid-item">
+                            <img src="./images/emir-recursive-ncc-sobel.jpg" width="500px">
+                            <figcaption>NCC + Sobel</figcaption>
+                        </div>
+                    </div>
+
+                    <h4>Auto-Contrast</h4>
+                    <p>
+                        To improve the visual quality of the image, I apply a variant of adaptive histogram equalization (HE), contrast limited adaptive histogram equalization (CLAHE) to automatically enhance the contrast of the aligned image. In simple terms, HE involves taking a histogram of all pixel values in an image (typically the Luma/brightness channel of an image), and redistributing the intensities to more equally distribute values across the entire spectrum. However, HE is more prone to over-amplifying noise and values on the end of the apt run (very dark and very bright values). Thus, we use CLAHE, which is more robust to noise and can better avoid information loss due to over-amplifying brightness/darkness.
+
+                    </p>
+                    <p>
+                        CLAHE works similarly to HE, except it divides the image into small tiles and performs HE on each block. To avoid noise amplification, histogram bins are clipped to a specific threshold, and all values above this threshold are uniformly distributed across all bins. 
+                    </p>
+                    <p>
+                        In this project, we test applying CLAHE with respect to two different color spaces: LAB and YCbCr (used by JPEG), since the  Luminance component of the LAB colorspace and the Luma (Y) component of the YCbCr colorspace both effectively store information about the values present in the image. We convert the image to each respective colorspace, apply CLAHE to the L or Y channel respectively, and remerge the image accordingly. As expected, the final results are visually identical, so we stick to applying CLAHE with respect to the YCbCr colorspace, since all images are stored and exported as JPEGs. 
+                    </p>
+                    <p>
+                        Pictured below are some images before and after applying CLAHE:
+                    </p>
+                    <br>
+
+                    <div class="image-grid">
+                        <div class="grid-item">
+                            <img src="./images/emir-recursive-ncc-sobel.jpg" width="500px">
+                            <figcaption>Before CLAHE</figcaption>
+                        </div>
+                        <div class="grid-item">
+                            <img src="./images/emir-clahe.jpg" width="500px">
+                            <figcaption>After CLAHE</figcaption>
+                            <figcaption>Clip limit: 1.5</figcaption>
+                            <figcaption>Tile size: 16x16</figcaption>
+                        </div>
+                    </div>
+                    <br>
+
+                    <div class="image-grid">
+                        <div class="grid-item">
+                            <img src="./images/lady-recursive-ncc-sobel.jpg" width="500px">
+                            <figcaption>Before CLAHE</figcaption>
+                        </div>
+                        <div class="grid-item">
+                            <img src="./images/lady-clahe.jpg" width="500px">
+                            <figcaption>After CLAHE</figcaption>
+                            <figcaption>Clip limit: 1.5</figcaption>
+                            <figcaption>Tile size: 16x16</figcaption>
+                        </div>
+                    </div>
+                    <br>
+
+                    <div class="image-grid">
+                        <div class="grid-item">
+                            <img src="./images/church-recursive-ncc-sobel.jpg" width="500px">
+                            <figcaption>Before CLAHE</figcaption>
+                        </div>
+                        <div class="grid-item">
+                            <img src="./images/church-clahe.jpg" width="500px">
+                            <figcaption>After CLAHE</figcaption>
+                            <figcaption>Clip limit: 1.5</figcaption>
+                            <figcaption>Tile size: 16x16</figcaption>
+                        </div>
+                    </div>
+                    <br>
+
+                    <div class="image-grid">
+                        <div class="grid-item">
+                            <img src="./images/melons-recursive-ncc-sobel.jpg" width="500px">
+                            <figcaption>Before CLAHE</figcaption>
+                        </div>
+                        <div class="grid-item">
+                            <img src="./images/melons-clahe.jpg" width="500px">
+                            <figcaption>After CLAHE</figcaption>
+                            <figcaption>Clip limit: 1.5</figcaption>
+                            <figcaption>Tile size: 16x16</figcaption>
+                        </div>
+                    </div>
+
+                </div>
             </div>
         </div>
     </div>
+    <footer>
+        <div class="copyright">made by ayra jafri</div>
+        <div><a href="/index.html">return home</a><div>
+    </footer>
 </body>
 </html>

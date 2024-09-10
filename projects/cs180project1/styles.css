@@ -36,11 +36,48 @@ html {
     
 }
 
+:root {
+    /* Colors */
+    --ebony-clay: #1f2937;
+    --ebony-clay-translucent: rgba(31, 41, 55, 0.2);
+    --snow-drift: #F9FAF8;
+    --athens-gray: #E5E7EB;
+    --dodger-blue: #3882f6;
+    --bombay: #b6b8bc;
+  
+  
+    /* Font settings */
+    --system-fontSize-main: 48px;
+    --system-fontWeight-header: 900;
+    --system-fontSize-secondary: 18px;
+    --system-fontSize-logo: 24px;
+    --system-fontSize-infoHeader: 36px;
+    --system-fontWeight-infoHeader: 900;
+    --system-fontSize-quoteText: 36px;
+    --system-fontWeight-quoteText: 100;
+  
+    /*UI Colors */
+    --system-color-main-background: var(--ebony-clay);
+    --system-color-main-background-alt: var(--snow-drift);
+    --system-color-header: var(--ebony-clay);
+    --system-color-quote-background: var(--athens-gray);
+    --system-color-quote: var(--ebony-clay);
+  
+    --system-fontColor-main: var(--snow-drift);
+    --system-fontColor-second: var(--athens-gray);
+    
+    --button-color-action: var(--dodger-blue);
+    --button-color-border: var(--system-color-main-background-alt);
+  
+    --link-color-hover: var(--bombay)
+  }
+
 body {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    /* background-color: var(--system-color-main-background); */
+    background-color: var(--system-color-main-background-alt);
+    color: var(--system-color-header);
     margin: 0px;
     padding: 0px;
 }
@@ -87,19 +124,28 @@ li {
     margin: 0px;
 }
 
-.sidebar a {
+a {
+    -o-transition: 0.25s;
+    -ms-transition: 0.25s;
+    -moz-transition: 0.25s;
+    -webkit-transition: 0.25s;
+    transition: 0.25s;
     text-decoration: none;
-    color: #2836b6;
+    color: var(--dodger-blue);
 }
 
-.sidebar a:hover {
+a:hover {
     -o-transition: 0.5s;
     -ms-transition: 0.5s;
     -moz-transition: 0.5s;
     -webkit-transition: 0.5s;
     transition: 0.5s;
     text-decoration: none;
-    color: #180a44;
+    color: var(--ebony-clay);
+}
+
+p {
+    line-height: 1.5;
 }
 
 .sidebar ul {
@@ -124,17 +170,69 @@ li {
     text-align: center;
     margin: 0px 20px 20px;
     padding: 20px;
-    background-color: #f0f0f0;
+    background-color: var(--system-color-quote-background);
 }
 
 .main-content {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: start;
     padding: 20px;
+    margin: 0px;
+}
+
+figcaption {
+    font-size: 0.85em;
+    font-style: italic;
+    text-align: center;
+    padding: 0.5em;
+}
+
+.image-grid {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 2.5em;
+    justify-content: center;
+    min-width: 10%;
+    min-height: 5%; /* comment out if having issues */
+    height: auto;
+    width: auto;
+}
+
+.grid-item {
+    display: flex;
+    flex: 1 0 auto;
+    max-width: 500px;
+    max-height: 550px;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 8px;
+    border-color: var(--system-color-quote-background);
+    border-width: 3px;
+    border-style: solid;
+    object-position: center;
+    background-color: var(--system-color-main-background-alt);
+    overflow: clip;
+    box-shadow: 0 4px 8px rgba(44, 45, 47, 0.1);
+    /* transition: box-shadow 0.5s ease; */
+}
+
+footer {
+    flex-shrink: 0px;
+    text-align: center;
+    width: 100%;
+    padding: 1em;
+    margin-top: 1em;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #f0f0f0;
 }
 
 @media screen and (max-width: 768px) {
+    p {
+        padding-left: 1vw;
+    }
     .content {
         flex-direction: column;
         align-items: center;
@@ -142,6 +240,7 @@ li {
 
     .main-content {
         padding: 0 0.5vw;
+        align-items: center;
     }
 
     .sidebar {

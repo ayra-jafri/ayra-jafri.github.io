@@ -1,0 +1,291 @@
+
+/* html css specifically is a courtesy of 
+https://stackoverflow.com/questions/78169850/how-to-align-a-logo-on-the-left-and-navigation-on-the-right-using-html-and-css 
+*/
+
+html {
+    box-sizing: border-box;
+    font-family:
+      /* Newer browsers */
+      system-ui,
+      /* Safari for OS X and iOS (San Francisco) */
+      -apple-system,
+      /* Chrome < 56 for OS X (San Francisco) */
+      BlinkMacSystemFont,
+      /* Windows */
+      'Segoe UI',
+      /* Android */
+      Roboto,
+      /* Basic web fallback */
+      'Helvetica Neue',
+      Helvetica,
+      Arial,
+      sans-serif,
+      /* Emoji fonts */
+      'Apple Color Emoji',
+      'Segoe UI Emoji',
+      'Segoe UI Symbol',
+      'Noto Color Emoji';
+    font-size: 1em;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+    
+}
+
+:root {
+    /* Colors */
+    --ebony-clay: #1f2937;
+    --ebony-clay-translucent: rgba(31, 41, 55, 0.2);
+    --snow-drift: #F9FAF8;
+    --athens-gray: #E5E7EB;
+    --dodger-blue: #3882f6;
+    --bombay: #b6b8bc;
+  
+  
+    /* Font settings */
+    --system-fontSize-main: 48px;
+    --system-fontWeight-header: 900;
+    --system-fontSize-secondary: 18px;
+    --system-fontSize-logo: 24px;
+    --system-fontSize-infoHeader: 36px;
+    --system-fontWeight-infoHeader: 900;
+    --system-fontSize-quoteText: 36px;
+    --system-fontWeight-quoteText: 100;
+  
+    /*UI Colors */
+    --system-color-main-background: var(--ebony-clay);
+    --system-color-main-background-alt: var(--snow-drift);
+    --system-color-header: var(--ebony-clay);
+    --system-color-quote-background: var(--athens-gray);
+    --system-color-quote: var(--ebony-clay);
+  
+    --system-fontColor-main: var(--snow-drift);
+    --system-fontColor-second: var(--athens-gray);
+    
+    --button-color-action: var(--dodger-blue);
+    --button-color-border: var(--system-color-main-background-alt);
+  
+    --link-color-hover: var(--bombay)
+  }
+
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: var(--system-color-main-background-alt);
+    color: var(--system-color-header);
+    margin: 0px;
+    padding: 0px;
+}
+
+h1,
+h2 {
+    padding: 5px 0px;
+    margin: 0px;
+}
+
+h3 {
+    padding: 0px;
+    margin: 0px;
+}
+
+.content {
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: top;
+    margin: 0px;
+    padding: 0px;
+}
+
+.sidebar {
+    display: block;
+    margin: 0px;
+    margin-top: 20px;
+    padding-top: 10px;
+    padding-right: 2em;
+    top: 0;
+    height: 10em;
+    position: sticky;
+}
+
+ul,
+li {
+    /* background-color: #f0f0f0; */
+}
+
+.sidebar li {
+    list-style-type: none;
+    padding: 5px 0px;
+    margin: 0px;
+}
+
+a {
+    -o-transition: 0.25s;
+    -ms-transition: 0.25s;
+    -moz-transition: 0.25s;
+    -webkit-transition: 0.25s;
+    transition: 0.25s;
+    text-decoration: none;
+    color: var(--dodger-blue);
+}
+
+a:hover {
+    -o-transition: 0.5s;
+    -ms-transition: 0.5s;
+    -moz-transition: 0.5s;
+    -webkit-transition: 0.5s;
+    transition: 0.5s;
+    text-decoration: none;
+    color: var(--ebony-clay);
+}
+
+p {
+    /* padding: 0px;
+    margin: 0px;
+    min-width: 0px;
+    min-height: 0px; */
+    line-height: 1.5;
+}
+
+.sidebar ul {
+    padding: 0px;
+    margin: 0.5em 0;
+    padding-inline-start: 10px
+}
+
+.main-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 0px;
+    padding: 1em 2em;
+}
+
+.heading {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    margin: 0px 20px 20px;
+    padding: 20px;
+    background-color: var(--system-color-quote-background);
+}
+
+.main-content {
+    /* display: flex; */
+    flex-direction: column;
+    align-items: start;
+    padding: 20px;
+    margin: 0px;
+    min-width: 0px;
+    
+}
+
+.toc {
+    font-weight: 600;
+}
+
+.toc .sub-toc {
+    font-weight: 400;
+}
+
+.overview {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    flex-wrap: wrap;
+    padding: 20px;
+    margin: 0px;
+    min-width: 0;
+
+}
+
+figcaption {
+    font-size: 0.85em;
+    font-style: italic;
+    text-align: center;
+    padding: 0.5em;
+}
+
+.image-grid {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 2.5em;
+    justify-content: center;
+    min-width: 10%;
+    min-height: 5%; /* comment out if having issues */
+    height: auto;
+    width: auto;
+}
+
+.grid-item {
+    display: flex;
+    flex: 1 0 auto;
+    max-width: 500px;
+    max-height: 550px;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 8px;
+    border-color: var(--system-color-quote-background);
+    border-width: 3px;
+    border-style: solid;
+    object-position: center;
+    background-color: var(--system-color-main-background-alt);
+    overflow: clip;
+    box-shadow: 0 4px 8px rgba(44, 45, 47, 0.1);
+    /* transition: box-shadow 0.5s ease; */
+}
+
+footer {
+    flex-shrink: 0px;
+    text-align: center;
+    width: 100%;
+    padding: 1em;
+    margin-top: 1em;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #f0f0f0;
+}
+
+@media screen and (max-width: 768px) {
+    p {
+        padding-left: 1vw;
+    }
+    .content {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .main-content {
+        display: flex;
+        flex-direction: column;
+        padding: 0 0.5vw;
+        align-items: center;
+    }
+
+    .sidebar {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 10vh 0.5vw;
+        position: relative;
+        height: 10em;
+    }
+    
+    .sidebar ul {
+        padding-inline-start: 0px;
+    }
+
+    /* .sidebar li:last-child {
+        padding-bottom: 1em;
+    } */
+}

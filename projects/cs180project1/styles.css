@@ -145,6 +145,10 @@ a:hover {
 }
 
 p {
+    /* padding: 0px;
+    margin: 0px;
+    min-width: 0px;
+    min-height: 0px; */
     line-height: 1.5;
 }
 
@@ -159,7 +163,7 @@ p {
     flex-direction: column;
     justify-content: center;
     margin: 0px;
-    padding: 0px 2em;
+    padding: 1em 2em;
 }
 
 .heading {
@@ -174,11 +178,22 @@ p {
 }
 
 .main-content {
-    display: flex;
+    /* display: flex; */
     flex-direction: column;
     align-items: start;
     padding: 20px;
     margin: 0px;
+    min-width: 0px;
+}
+
+.overview {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    flex-wrap: wrap;
+    padding: 20px;
+    margin: 0px;
+    min-width: 0;
 }
 
 figcaption {
@@ -239,6 +254,8 @@ footer {
     }
 
     .main-content {
+        display: flex;
+        flex-direction: column;
         padding: 0 0.5vw;
         align-items: center;
     }

@@ -150,6 +150,17 @@ gap: 1.75em;
 margin-right: 1em;
 }
 
+.project-list {
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: flex-start;
+}
+
+.project-list li {
+  list-style-type: square
+  }
+
 .main-container {
 display: flex;
 flex-direction: column;

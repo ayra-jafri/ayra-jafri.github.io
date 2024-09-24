@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CS 180 Project 2</title>
+    <link rel="stylesheet" href="./styles.css" charset="utf-8">
+</head>
+<body>
+    <div class="main-container">
+        <div class="heading">
+            <h1>CS 180 Project 2</h1>
+            <h2>Fun with Filters and Frequencies!</h2>
+            <h3>Ayra Jafri, Fall 2024</h3>
+            <h3>September 23, 2024</h3>
+        </div>
+        <div class="content">
+            <div class="sidebar">
+                <h3>Table of Contents</h3>
+                <ul class="toc">
+                    <li><a href="#intro">Project Overview</a></li>
+                    <li><a href="#part1">Fun with Filters</a>
+                        <ul class="sub-toc">
+                            <li><a href="#part1-1">Finite Difference Operator</a></li>
+                            <li><a href="#part1-2">Derivative of Gaussian (DoG) Filter</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#part2">Fun with Frequencies</a>
+                        <ul class="sub-toc">
+                            <li><a href="#part2-1">Image "Sharpening"</a></li>
+                            <li><a href="#part2-2">Hybrid Images</a></li>
+                            <li><a href="#part2-3">Gaussian & Laplacian Stacks</a></li>
+                            <li><a href="#part2-4">Multi-resolution Blending</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#reflect">Reflection</a></li>
+                </ul>
+            </div>
+            <div class="main-content">
+                
+                <!-- Project Overview -->
+                <div class="overview">
+                    <h3 id="intro">Project Overview</h3>
+                    <p>
+                        The following project explores the relationship between the frequencies of images and how one can analyze and manipulate them to acheive a variety of interesting effects.
+                    </p>
+                </div>
+                <br>
+
+                <!-- Part 1 - Fun with Filters -->
+                <div class="part1">
+                    <h3 id="part1">Fun with Filters!</h3>
+                    <p>
+                        For this part, we will be exploring basic edge detection filters using this image of a camera man:
+                    </p>
+                    <img src="./images/cameraman.png">
+                        <figcaption>Lovely fellow!</figcaption>
+                    <br>
+
+                    <div id="part1-1">
+                        <h4>Part 1.1: The Finite Difference Operator</h4>
+                        <p>
+                            First, we take the humble difference filters Dx and Dy: 
+                        </p>
+                        <img height="150px" src="./images/diff_op.png">
+                        <p>
+                            and convolve them with the image to detect the vertical and horizontal edges of the camera man photo. This is the same as taking the partial derivative of the image in the x and y directions.
+                        </p>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Vertical Edges</th>
+                                    <th>Horizontal Edges</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><img src="./images/man_vert_edges.png"></td>
+                                    <td><img src="./images/man_horiz_edges.png"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <p>
+                            Next, we can compute the gradient magnitude of the image by taking the square root of the sum of the squares of the x and y partial gradient images (see above). 
+                            We then binarize the gradient magnitude image to get the following edge map to suppress as much noise as possible while still preserving as many true edges as possible.
+                        </p>
+
+                        <table>
+                            <thead>
+                                <th>Gradient Magnitude</th>
+                                <th>Binarized Gradient Magnitude</th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><img src="./images/man_grad_mag.png"></td>
+                                    <td><img src="./images/man_grad_mag_th.png"></td>
+                                </tr>
+                                <tr>
+                                    <td>Note the "fake edges" and noise caused by the grass.</td>
+                                    <td><figcaption>Given the image values range from 0 to 1, the threshold chosen was 0.27.</figcaption></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <br>
+
+                    <div id="part1-2">
+                        <h4 id="part1-2">Part 1.2: Derivative of Gaussian (DoG) Filter</h4>
+                        
+                        <p>
+                            As seen above, the gradient magnitude image is rather noisy. To address this, we can apply a Gaussian filter as a smoothing operator to reduce these noisy artifacts when calculating the gradient magnitude.
+                        </p>
+                        <p>
+                            We can use cv2's getGaussianKernel to generate a 1D Gaussian filter, which we then take the outer product of with its transpose to generate a 2D Gaussian filter.
+                        </p>
+                        <p>
+                            We apply this Gaussian filter below:
+                        </p>
+                        
+                        <table>
+                            <thead>
+                                <th>Original Image</th>
+                                <th>Gaussian Filtered Image</th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><img src="./images/cameraman.png"></td>
+                                    <td><img src="./images/man_blur.png"></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td><figcaption>Parameters for the gaussian kernel: Sigma = 3, Kernel size (ksize) = 20</figcaption></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <p>
+                            We now take the partial derivative of the Gaussian blurred image in the x and y directions, like before:
+                        </p>
+                        
+                        <table>
+                            <thead>
+                                <th>Vertical Edges</th>
+                                <th>Horizontal Edges</th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><img src="./images/man_blur_then_edge_vert_edges.png"></td>
+                                    <td><img src="./images/man_blur_then_edge_horiz_edges.png"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <p>We can see that compared to the previous edge map images, these ones feature thicker, smoother lines and less noise, likely due to the Gaussian filter.</p>
+
+                        <p>
+                            Finally, we compute the gradient magnitude and binarize it, just like before:
+                        </p>
+                        
+                        <table>
+                            <thead>
+                                <th>Gradient Magnitude</th>
+                                <th>Binarized Gradient Magnitude</th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><img src="./images/man_grad_mag_blurThenEdge.png"></td>
+                                    <td><img src="./images/man_grad_mag_blurThenEdge_th.png"></td>
+                                </tr>
+                                <tr>
+                                    <td>Note the reduction in noise compared to previously.</td>
+                                    <td><figcaption>Given a range from 0 to 1, the threshold was 0.35.</figcaption></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <p>
+                            Compared to the previous gradient magnitude image, this one has smoother, thicker lines. Although smaller details are not as emphasized or are seemingly missing, the overall amount of noise in the image has decreased immensely.
+                        </p>
+
+                        <p>
+                            We had to compute two separate convolutions in order to generate the gradient magnitude image. This can become computationally expensive for batch operations or larger images!
+                        </p>
+                        <p>
+                            However, we can combine these two operations into one by convolving the image with the derivative of the Gaussian (DoG) filter (in the x and y directions, respectively).
+                            The DoG filters (DoG in the x and y directions, respectively) are the convolutions of the Gaussian filter with each of the finite difference operators.
+                        </p>
+                        <p>
+                            Due to the commutative and associative properties of convolution, this will result in exactly the same gradient maps as before, just with fewer computations.
+                        </p>
+                        <p>
+                            Pictured below are the kernels of the DoG filters in the vertical and horizontal directions:
+                        </p>
+                        <table>
+                            <thead>
+                                <th>DoG Filter in the x direction</th>
+                                <th>DoG Filter in the y direction</th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><img src="./images/dog_x.png"></td>
+                                    <td><img src="./images/dog_y.png"></td>
+                                </tr>
+                                <tr>
+                                    <td>This detects vertical edges.</td>
+                                    <td>This detects horizontal edges.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p>
+                            We convolve the image with each of the DoG filters, compute the gradient magnitude, and binarize it. Note that this looks identical the results from above.
+                        </p>
+                        <table>
+                            <thead>
+                                <th>Vertical Edges</th>
+                                <th>Horizontal Edges</th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><img src="./images/man_dog_vert_edges.png"></td>
+                                    <td><img src="./images/man_dog_horiz_edges.png"></td>
+                            </tbody>
+                        </table>
+                        <br>
+                        <table>
+                            <thead>
+                                <th>Gradient Magnitude</th>
+                                <th>Binarized Gradient Magnitude</th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><img src="./images/man_grad_mag_dog.png"></td>
+                                    <td><img src="./images/man_grad_mag_dog_th.png"></td>
+                                </tr>
+                                <tr>
+                                    <td>Same amount of noise reduction.</td>
+                                    <td><figcaption>Same threshold of 0.35.</figcaption></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <br>
+                
+                <div class="part2" id="part2">
+                    <h3>Fun with Frequencies!</h3>
+                    <div id="part2-1">
+                        <h4>Part 2.1: Image "Sharpening"</h4>
+                        <p>
+                            In this section, we'll explore a basic sharpening technique.
+                        </p>
+                        <p>
+                            This algorithm involves blurring an image (using a Gaussian filter), which acts as a lowpass filter. 
+                            We can then subtract the original image from the blurred image to retrieve the high frequencies of the image (this operation acts like a high pass filter). 
+                            Finally, we add scale these high frequency components by some alpha, and add it to the original image to retreive a sharpened version of the original image.
+                        </p>
+                        <p>
+                            This is also known as the "unsharp mask" filter.
+                        </p>
+                        <p>
+                            Below are some examples of this in action:
+                        </p>
+                        
+                        <table>
+                            <thead>
+                                <th>Original Image:</th>
+                                <th>Blurred Image:</th>
+                                <th>High Frequencies:</th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><img src="./images/taj.jpg"></td>
+                                    <td><img src="./images/taj_blur.png"></td>
+                                    <td><img src="./images/taj_details.png"></td>
+                                </tr>
+                                <tr>
+                                    <td><figcaption>Original image of the Taj Mahal.</figcaption></td>
+                                    <td><figcaption>Parameters for the gaussian kernel: Sigma = 3, Kernel size (ksize) = 20</figcaption></td>
+                                    <td>&nbsp;</td>
+                            </tbody>
+                        </table>
+                        <br>
+                        <table>
+                            <thead>
+                                <th>Original Image:</th>
+                                <th colspan="4">Sharpened Images:</th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th>&nbsp;</th>
+                                    <th>Alpha = 0.7</th>
+                                    <th>Alpha = 1</th>
+                                    <th>Alpha = 2</th>
+                                    <th>Alpha = 5</th>
+                                </tr>
+                                <tr>
+                                    <td><img src="./images/taj.jpg"></td>
+                                    <td><img src="./images/taj_sharpened_point7.png"></td>
+                                    <td><img src="./images/taj_sharpened_1.png"></td>
+                                    <td><img src="./images/taj_sharpened_2.png"></td>
+                                    <td><img src="./images/taj_sharpened_5.png"></td>
+                                </tr>
+                                <tr>
+                                    <td>&nbsp;</td>
+                                    <td><figcaption>Note how edges and small details are more exagerrated.</figcaption></td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>Mmmm... deep-fried images.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <p>Let's see how the unsharp mask filter works for images with lots of noise (aka high frequencies): </p>
+                        
+                        <table>
+                            <thead>
+                                <th>Original Image:</th>
+                                <th colspan="4">Sharpened Images:</th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th>&nbsp;</th>
+                                    <th>Alpha = 0.5</th>
+                                    <th>Alpha = 1</th>
+                                    <th>Alpha = 2</th>
+                                    <th>Alpha = 5</th>
+                                </tr>
+                                <tr>
+                                    <td><img height="300px" src="images/field.png"></td>
+                                    <td><img height="300px" src="images/field_sharpened_p5.png"></td>
+                                    <td><img height="300px" src="images/field_sharpened_1.png"></td>
+                                    <td><img height="300px" src="images/field_sharpened_2.png"></td>
+                                    <td><img height="300px" src="images/field_sharpened_5.png"></td>
+                                </tr>
+                                <tr>
+                                    <td>A photo I took in Yosemite this summer. Lots of grain due to analog film.</td>
+                                    <td>Grain becomes more perceptible, along with grass and trees.</td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>Noise is extremely apparent. Can see details more clearly, but at a cost.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <p> As an experiment, I decided to see what would happen if I blurred an already sharpened image, and then re-sharpened it. These are the results: </p>
+                        <table>
+                            <thead>
+                                <th>Original Image:</th>
+                                <th>Sharpened Image:</th>
+                                <th>Sharpened, then blurred:</th>
+                                <th>Sharpened, blurred, then re-sharpened:</th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><img height=300px src="./images/anton_darius_cat.jpg"></td>
+                                    <td><img height=300px src="./images/kitty_sharp.png"></td>
+                                    <td><img height=300px src="./images/kitty_sharp_blur.png"></td>
+                                    <td><img height=300px src="./images/kitty_sharp_blur_sharp.png"></td>
+                                </tr>
+                                <tr>
+                                    <td>Credits to <a href="https://unsplash.com/photos/short-fur-black-and-brown-kitten-osbXm3LibCM">Anton Darius.</a></td>
+                                    <td><figcaption>Sharpened, alpha = 2</figcaption></td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p>
+                            In a way, it acts similar to a bad-reject filter-- we (attempt to) preserve certain higher frequencies in the original image while removing other high frequencies and keeping lower ones.
+                        </p>
+                    </div>
+                    
+                    <div id="part2-2">
+                        <h4>Part 2.2: Hybrid Images</h4>
+                        <p>
+                            Hybrid images are images that appear to be one thing when viewed up close, but look like another thing when viewed from afar.
+                        </p>
+                        <p>
+                            To create hybrid images, we first select two images, which we'll call image_lf and image_hf. We extract the low frequencies from image_lf by convolving image_lf with a Gaussian filter, and the high frequencies from image_hf with a Laplacian filter, which acts similarly to a high pass filter. 
+                        <p>
+                            (Note that for this project, I implemented two different Laplacian filters: the one shown on this page gets high frequencies by subtracting the image from the blurred versin, and the other is based off of the SIGGRAPH 2006 <a href="http://olivalab.mit.edu/publications/OlivaTorralb_Hybrid_Siggraph06.pdf">paper</a> by Oliva, Torralba, and Schyns.)
+                        </p>
+                        <p>
+                            We then return a weighted sum of the low and high frequency images.
+                        </p>
+                        <p>
+                            Pictured below is an example with a man, a cat, and other images:
+                        </p>
+                        
+                        <table>
+                            <thead>
+                                <th>High frequency image:</th>
+                                <th>Low frequency image:</th>
+                                <th>Hybrid image:</th>
+                                <th>Blurred hybrid image:</th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><img height=300px src="./images/DerekPicture.jpg"></td>
+                                    <td><img height=300px src="./images/nutmeg.jpg"></td>
+                                    <td><img height="300px", src="./images/cat_hybrid_alt.png"></td>
+                                    <td><img height="300px", src="./images/cat_hybrid_alt_blurred.png"></td>
+                                </tr>
+                                <tr>
+                                    <td>&nbsp;</td>
+                                </tr>
+                                <tr>
+                                    <td>Derek Thompson.</a></td>
+                                    <td>Nutmeg!</a></td>
+                                    <td>&nbsp;</td>
+                                    <td>Meant to imitate viewing from afar.</td>
+                                </tr>
+                                <tr>
+                                    <td><img height=300px src="./images/nutmeg.jpg"></td>
+                                    <td><img height=300px src="./images/DerekPicture.jpg"></td>
+                                    <td><img height="300px", src="./images/cat_hybrid_alt_switch.png"></td>
+                                    <td><img height="300px", src="./images/cat_hybrid_alt_blurred_switch.png"></td>
+                                </tr>
+                                <tr>
+                                    <td>Nutmeg!</a></td>
+                                    <td>Derek Thompson.</a></td>
+                                    <td>&nbsp;</td>
+                                    <td>Meant to imitate viewing from afar.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p>
+                            Let's compare the two laplacian filters! Using the other Laplacian filter method from the paper, here's another result:
+                        </p>
+                        <table>
+                            <thead>
+                                <th>High frequency image:</th>
+                                <th>Low frequency image:</th>
+                                <th>Hybrid image:</th>
+                                <th>Blurred hybrid image:</th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><img height=300px src="./images/dean_norris_angry.png"></td>
+                                    <td><img height=300px src="./images/dean_norris_happy.png"></td>
+                                    <td><img height="300px", src="./images/hank_hybrid_sg_7p5_5_a_1p5_0p1.png"></td>
+                                    <td><img height="300px", src="./images/hank_hybrid_sg_7p5_5_a_1p5_0p1_blurred.png"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <p>
+                            Here's the same images using the simple Laplacian filter described here (my favorite result):
+                        </p>
+                        
+                        <table>
+                            <thead>
+                                <th>High frequency image:</th>
+                                <th>Low frequency image:</th>
+                                <th>Hybrid image:</th>
+                                <th>Blurred hybrid image:</th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><img height=300px src="./images/dean_norris_angry.png"></td>
+                                    <td><img height=300px src="./images/dean_norris_happy.png"></td>
+                                    <td><img height="300px", src="./images/alt_hank_hybrid_sg_7p5_5_a_1p5_0p1.png"></td>
+                                    <td><img height="300px", src="./images/alt_hank_hybrid_sg_7p5_5_a_1p5_0p1_blurred.png"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p>
+                            Here are the 2D Fourier Transform plots for the above images:
+                        </p>
+                        <table>
+                            <thead>
+                                <th>Dean Norris Angry FFT (high frequency image):</th>
+                                <th>Dean Norris Happy FFT (low frequency image):</th>
+                                <th>High Frequency Image Filtered FFT:</th>
+                                <th>Low Frequency Image Filtered FFT:</th>
+                                <th>Hybrid Image FFT:</th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><img height=300px src="./images/hank_angry_fft.png"></td>
+                                    <td><img height=300px src="./images/hank_happy_fft.png"></td>
+                                    <td><img height="300px", src="./images/hank_angry_fft_filter.png"></td>
+                                    <td><img height="300px", src="./images/hank_happy_fft_filter.png"></td>
+                                    <td><img height="300px", src="./images/hank_hybrid_fft.png"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <p>
+                            This hybrid image didn't work out nicely, sadly:
+                        </p>
+
+                        <table>
+                            <thead>
+                                <th>High frequency image:</th>
+                                <th>Low frequency image:</th>
+                                <th>Hybrid image:</th>
+                                <th>Blurred hybrid image:</th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><img height=300px src="./images/shasta_smol.jpg"></td>
+                                    <td><img height=300px src="./images/shasta_study.jpg"></td>
+                                    <td><img height="300px", src="./images/alt_shasta_hybrid.png"></td>
+                                    <td><img height="300px", src="./images/alt_shasta_hybrid_blurred.png"></td>
+                                </tr>
+                            </tbody>
+                            <tbody>
+                                <tr>
+                                    <td>A photo I took at Mt. Shasta.</td>
+                                    <td>A photo study I painted based off of the photo.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p>
+                            I suspect this hybrid didn't work out nicely because of a few reasons: The images both have similar colors, are both very visually busy (lots of high frequency), and aren't scaled exactly (my painting is a bit off).
+                        </p>
+
+                    </div>
+
+                    <div id="part2-3">
+                        <h4>Part 2.3: Gaussian & Laplacian Stacks</h4>
+                        <p>
+                            Below are the Laplacian stacks of these apple and orange images. We'll be seeing how to use them in the next part.
+                        </p>
+                        <h4>Gaussian stacks: </h4>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <td>&nbsp;</td>
+                                    <th>Level 0:</th>
+                                    <th>Level 1:</th>
+                                    <th>Level 2:</th>
+                                    <th>Level 3:</th>
+                                    <th>Level 4:</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th>Apple:</th>
+                                    <td><img height="300px" src="./images/apple_gaussian_stack_0.png"></td>
+                                    <td><img height="300px" src="./images/apple_gaussian_stack_1.png"></td>
+                                    <td><img height="300px" src="./images/apple_gaussian_stack_2.png"></td>
+                                    <td><img height="300px" src="./images/apple_gaussian_stack_3.png"></td>
+                                    <td><img height="300px" src="./images/apple_gaussian_stack_4.png"></td>
+                                </tr>
+                                <tr>
+                                    <th>Orange:</th>
+                                    <td><img height="300px" src="./images/orange_gaussian_stack_0.png"></td>
+                                    <td><img height="300px" src="./images/orange_gaussian_stack_1.png"></td>
+                                    <td><img height="300px" src="./images/orange_gaussian_stack_2.png"></td>
+                                    <td><img height="300px" src="./images/orange_gaussian_stack_3.png"></td>
+                                    <td><img height="300px" src="./images/orange_gaussian_stack_4.png"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <br>
+                        <h4>Laplacian stacks:</h4>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <td>&nbsp;</td>
+                                    <th>Level 0:</th>
+                                    <th>Level 1:</th>
+                                    <th>Level 2:</th>
+                                    <th>Level 3:</th>
+                                    <th>Level 4:</th>
+                                    <th>Level 5:</th>
+                                    <th>Level 6:</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th>Apple:</th>
+                                    <td><img height="300px" src="./images/apple_laplacian_stack_0.png"></td>
+                                    <td><img height="300px" src="./images/apple_laplacian_stack_1.png"></td>
+                                    <td><img height="300px" src="./images/apple_laplacian_stack_2.png"></td>
+                                    <td><img height="300px" src="./images/apple_laplacian_stack_3.png"></td>
+                                    <td><img height="300px" src="./images/apple_laplacian_stack_4.png"></td>
+                                    <td><img height="300px" src="./images/apple_laplacian_stack_5.png"></td>
+                                    <td><img height="300px" src="./images/apple_laplacian_stack_gauss.png"></td>
+                                </tr>
+                                <tr>
+                                    <th>Orange:</th>
+                                    <td><img height="300px" src="./images/orange_laplacian_stack_0.png"></td>
+                                    <td><img height="300px" src="./images/orange_laplacian_stack_1.png"></td>
+                                    <td><img height="300px" src="./images/orange_laplacian_stack_2.png"></td>
+                                    <td><img height="300px" src="./images/orange_laplacian_stack_3.png"></td>
+                                    <td><img height="300px" src="./images/orange_laplacian_stack_4.png"></td>
+                                    <td><img height="300px" src="./images/orange_laplacian_stack_5.png"></td>
+                                    <td><img height="300px" src="./images/orange_laplacian_stack_gauss.png"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <br>
+                        <p>
+                            Recreating Figure 3.42 from <a href="https://szeliski.org/Book/">Szelski (Ed 2)</a> page 167:
+                        </p>
+                        <table>
+                            <thead>
+                                <th>&nbsp;</th>
+                                <th>Right side: </th>
+                                <th>Left side: </th>
+                                <th>Full blend (hybrid image):</th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th>Level 0:</th>
+                                    <td><img height="300px" src="./images/left_orange_lap_stack_0.png"></td>
+                                    <td><img height="300px" src="./images/right_apple_lap_stack_0.png"></td>
+                                    <td><img height="300px" src="./images/applange_lap_stack_0.png"></td>
+                                </tr>
+                                <tr>
+                                    <th>Level 1:</th>
+                                    <td><img height="300px" src="./images/left_orange_lap_stack_1.png"></td>
+                                    <td><img height="300px" src="./images/right_apple_lap_stack_1.png"></td>
+                                    <td><img height="300px" src="./images/applange_lap_stack_1.png"></td>
+                                </tr>
+                                <tr>
+                                    <th>Level 2:</th>
+                                    <td><img height="300px" src="./images/left_orange_lap_stack_2.png"></td>
+                                    <td><img height="300px" src="./images/right_apple_lap_stack_2.png"></td>
+                                    <td><img height="300px" src="./images/applange_lap_stack_2.png"></td>
+                                </tr>
+                                <tr>
+                                    <th>Level 3:</th>
+                                    <td><img height="300px" src="./images/left_orange_lap_stack_3.png"></td>
+                                    <td><img height="300px" src="./images/right_apple_lap_stack_3.png"></td>
+                                    <td><img height="300px" src="./images/applange_lap_stack_3.png"></td>
+                                </tr>
+                                <tr>
+                                    <th>Level 4:</th>
+                                    <td><img height="300px" src="./images/left_orange_lap_stack_4.png"></td>
+                                    <td><img height="300px" src="./images/right_apple_lap_stack_4.png"></td>
+                                    <td><img height="300px" src="./images/applange_lap_stack_4.png"></td>
+                                </tr>
+                                <tr>
+                                    <th>Level 5:</th>
+                                    <td><img height="300px" src="./images/left_orange_lap_stack_5.png"></td>
+                                    <td><img height="300px" src="./images/right_apple_lap_stack_5.png"></td>
+                                    <td><img height="300px" src="./images/applange_lap_stack_5.png"></td>
+                                </tr>
+                                <tr>
+                                    <th>Level 6:</th>
+                                    <td><img height="300px" src="./images/left_orange_blur_stack.png"></td>
+                                    <td><img height="300px" src="./images/right_apple_blur_stack.png"></td>
+                                    <td><img height="300px" src="./images/applange_blur.png"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                    </div>
+
+                    <div id="part2-4">
+                        <h4>Part 2.4: Multi-resolution Blending</h4>
+                        <p>With the Laplacian and Gaussian stacks created, we can use them to blend images together using a mask!</p>
+                        <p>Below are some results: </p>
+
+                        <table>
+                            <thead>
+                                <th>Left Image:</th>
+                                <th>Right Image:</th>
+                                <th>Mask:</th>
+                                <th>Blended Image:</th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><img height="300px" src="./images/apple.jpg"></td>
+                                    <td><img height="300px" src="./images/orange.jpg"></td>
+                                    <td><img height="300px" src="./images/applange_mask_gaussian_stack.png"></td>
+                                    <td><img height="300px" src="./images/applange.png"></td>
+                                </tr>
+                                <tr>
+                                    <td>Apple</td>
+                                    <td>Orange</td>
+                                    <td>Mask</td>
+                                    <td>Applange</td>
+                                </tr>
+                                <tr>
+                                    <td>&nbsp;</td>
+                                </tr>
+                                <tr>
+                                    <td><img height="300px" src="./images/orange.jpg"></td>
+                                    <td><img height="300px" src="./images/apple.jpg"></td>
+                                    <td><img height="300px" src="./images/applange_mask_gaussian_stack.png"></td>
+                                    <td><img height="300px" src="./images/oraple.png"></td>
+                                </tr>
+                                <tr>
+                                    <td>Orange</td>
+                                    <td>Apple</td>
+                                    <td>Mask</td>
+                                    <td>The true oraple</td>
+                                </tr>
+                                <tr>
+                                    <td>&nbsp;</td>
+                                </tr>
+                                <tr>
+                                    <td><img height="500px" src="./images/winter_study.png"></td>
+                                    <td><img height="500px" src="./images/winter.png"></td>
+                                    <td><img height="500px" src="./images/winter_mask.png"></td>
+                                    <td><img height="500px" src="./images/winter_blend.png"></td>
+                                </tr>
+                                <tr>
+                                    <td>A photo study I made using the image on the right.</td>
+                                    <td>Credits to <a href="https://unsplash.com/photos/person-fishing-near-body-of-water-during-snow-odW4l3hy1-U">Allie Derbshire</a></td>
+                                    <td>Mask</td>
+                                    <td>Sleepy foxes IRL; this blend could look even smoother if I had adjusted the colors of my painting to match the original image.</td>
+                                </tr>
+                                <tr>
+                                    <td>&nbsp;</td>
+                                </tr>
+                                <tr>
+                                    <td><img height="400px" src="./images/oski_wow.jpg"></td>
+                                    <td><img height="400px" src="./images/apollo_wow.png"></td>
+                                    <td><img height="400px" src="./images/oski_mask.jpg"></td>
+                                    <td><img height="400px" src="./images/oski_apollo_wow.png"></td>
+                                </tr>
+                                <tr>
+                                    <td>Oski! (removed image from background before masking in PS)</td>
+                                    <td>The Apollo moon landing</td>
+                                    <td>Mask</td>
+                                    <td>Blended image; didn't turn out as nicely due to the mask + the original Oski background was bright.</td>
+                                </tr>
+                                <tr>
+                                    <td>&nbsp;</td>
+                                </tr>
+                                <tr>
+                                    <td><img height="500px" src="./images/squirrel.jpg"></td>
+                                    <td><img height="500px" src="./images/campanille.JPG"></td>
+                                    <td><img height="500px" src="./images/squirrel_mask.JPG"></td>
+                                    <td><img height="500px" src="./images/squirrel_campanille.png"></td>
+                                </tr>
+                                <tr>
+                                    <td>Squirrel! (pre-aligned via PS)</td>
+                                    <td>The Campanile</td>
+                                    <td>Mask</td>
+                                    <td>Attack on Squirrel!</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="reflection" id="reflect">
+                    <h4>Reflection:</h4>
+                    <p>
+                        I had a ton of fun with this project! 
+                        The biggest things I learned were how edge dectection filters work, and how we can blend images using only a mask, and the high and low frequencies of images.
+                        I also learned how we can use the gaps in human perception to our advantage to create optical illusions and even compress images. 
+                        JPG is pretty cool in that regard.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="copyright">made by ayra jafri</div>
+        <div><a href="/index.html">return home</a><div>
+    </footer>
+</body>
+</html>

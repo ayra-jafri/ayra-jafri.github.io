@@ -105,13 +105,26 @@ a:hover {
 .heading {
     /* display: flex;
     flex-direction: column;
+    justify-content: flex-start;
+    align-items: center; */
+    
+    /* display: flex;
+    flex-direction: column;
     justify-content: space-between;
     align-items: center;
     text-align: center; */
     /* margin: 0px 20px 20px; */
-    padding: 20px;
+    
+    padding: 0px 2em;
     background-color: var(--system-color-quote-background);
 }
+
+/* .sidebar {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    
+} */
 
 .sidebar ul {
     padding: 0px;
@@ -126,14 +139,28 @@ a:hover {
     margin: 0px;
 }
 
+.main-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    /* align-items: flex-start; */
+    margin: 0px;
+    padding: 0px;
+}
+
 .content {
     padding: 1em;
 }
 
 .main-content {
     /* border: 1px solid var(--system-color-main-background); */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    /* align-items: center; */
     padding: 2em 4em;
     margin: auto;
+
 }
 
 table {
@@ -143,4 +170,40 @@ table {
 td {
     text-align: center;
     vertical-align: middle;
+}
+
+footer {
+    flex-shrink: 0px;
+    text-align: center;
+    width: 100%;
+    padding: 1em;
+    margin-top: 1em;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #f0f0f0;
+}
+
+@media screen and (max-width: 768px) {
+    p {
+        padding-left: 1vw;
+    }
+    .content {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .sidebar {
+        /* display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center; */
+        text-align: center;
+        /* padding: 0 0.5vw; */
+        
+    }
+
+    .main-container{
+        flex-direction: column;
+        /* align-items: center; */
+    }
 }

@@ -119,18 +119,18 @@ a:hover {
     background-color: var(--system-color-quote-background);
 }
 
-/* .sidebar {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    
-} */
+.sidebar {
+    position: sticky;
+    top: 0; /* Adjust this value as needed */
+    height: auto;
+    padding: 0.25em 0;
+}
 
 .sidebar ul {
     padding: 0px;
     margin: 0.5em 0;
-    padding-inline-start: 10px
-    
+    padding-inline-start: 10px;
+    position: sticky;
 }
 
 .sidebar li {
@@ -142,7 +142,7 @@ a:hover {
 .main-container {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    /* justify-content: space-between; */
     /* align-items: flex-start; */
     margin: 0px;
     padding: 0px;
@@ -154,9 +154,9 @@ a:hover {
 
 .main-content {
     /* border: 1px solid var(--system-color-main-background); */
-    display: flex;
+    /* display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: center; */
     /* align-items: center; */
     padding: 2em 4em;
     margin: auto;

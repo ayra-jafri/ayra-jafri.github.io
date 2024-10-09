@@ -122,16 +122,22 @@ h1 {
     background-color: var(--system-color-quote-background);
 }
 
+<<<<<<< HEAD
 .head-titles {
     padding: 0em 0em 3em 0em;
 }
 
+=======
+>>>>>>> 1180b25d27e0e5df3f7aecf1e91bd834f13be296
 .sidebar {
     position: sticky;
     top: 0; /* Adjust this value as needed */
     height: auto;
     padding: 0.25em 0;
+<<<<<<< HEAD
     background-color: var(--system-color-quote-background);
+=======
+>>>>>>> 1180b25d27e0e5df3f7aecf1e91bd834f13be296
 }
 
 .sidebar ul {

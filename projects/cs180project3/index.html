@@ -4,46 +4,59 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CS 180 Project 3</title>
-    <link rel="stylesheet" href="./styles.css" charset="utf-8">
+    <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
     <div class="main-container">
         <div class="heading">
             <div class="head-titles">
-                <h1>CS 180</h1>
-                <h1> Project 3</h1>
-                <h2>Face Morphing</h2>
-                <h3>Ayra Jafri, Fall 2024</h3>
+                <div>
+                    <h1>CS 180</h1>
+                    <h1> Project 3:</h1>
+                    <h2>Face Morphing</h2>
+                </div>
                 <h3>October 7, 2024</h3>
+                <h3>Ayra Jafri</h3>
             </div>
-            <br>
-            <br>
+            <!-- <br>
+            <br> -->
             <div class="sidebar">
                 <h3>Table of Contents</h3>
                 <ul class="toc">
-                    <li><a href="#intro">Project Overview</a></li>
-                    <li><a href="#part1">Defining Correspondences</a>
+                    <li><a href="#intro">0.  Project Overview</a></li>
+                    <li><a href="#part1">1.  Defining Correspondences</a>
                     </li>
-                    <li><a href="#part2">Computing the "Mid-way Face"</a>
+                    <li><a href="#part2">2.  Computing the "Mid-way Face"</a>
                     </li>
-                    <li><a href="#part3">The Morph Sequence</a>
+                    <li><a href="#part3">3.  The Morph Sequence</a>
                     </li>
-                    <li><a href="#part4">The "Mean Face" of a Population</a>
+                    <li><a href="#part4">4.  The "Mean Face" of a Population</a>
                     </li>
-                    <li><a href="#part5">Caricatures: Extrapolating from the Mean</a>
+                    <li><a href="#part5">5.  Caricatures: Extrapolating from the Mean</a>
                     </li>
-                    <li><a href="#reflect">Reflection</a></li>
+                    <li><a href="#part6">6.  Bells & Whistles</a>
+                    </li>
+                    <li><a href="#bonus">(spooky) 🎃 Bonus!</a>
+                    </li>
                 </ul>
             </div>
         </div>
         <div class="content">
             <div class="main-content">
-                
+                <!-- <div class="img-table">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td><img width="200px" src="./images/smootherBaracKurry.gif" alt="120 framed morph from Steph Curry to Barack Obama"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div> -->
                 <!-- Project Overview -->
                 <div class="overview">
                     <h3 id="intro">Project Overview</h3>
                     <p>
-                        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Dolores, repellendus? Possimus totam nobis, quae quo commodi nesciunt quia nisi minus reprehenderit laudantium iste suscipit cum voluptate dolores fugiat repellendus! Dicta?
+                        This project explores how we can morph faces together, compute average faces, and create caricatures through the use of Delauney triangularization, matrix transformations, barycentric coordinates, and interpolation.
                     </p>
                 </div>
                 <br>
@@ -52,59 +65,540 @@
                 <div class="part1">
                     <h3 id="part1">Defining Correspondences</h3>
                     <p>
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis saepe cumque ullam totam ipsa praesentium inventore explicabo a facilis est voluptas magni dolor assumenda ratione quasi deleniti quo, voluptatibus optio.
+                        Let's try to morph Barack Obama's face to Steph Curry's face!
                     </p>
+                    <div class="img-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Barack Obama</th>
+                                    <th>Steph Curry</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><img src="./images/MS_Obama_CloseUp.jpg" alt="Barack Obama"><figcaption><a href="https://martinschoeller.com/Barack-Obama">Image source</a></figcaption></td>
+                                    <td><img src="./images/MS_Curry_Stephen_CloseUp.jpg" alt="Steph Curry"><figcaption><a href="https://martinschoeller.com/Stephen-Curry">Image source</a></figcaption></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p>
+                        The first thing we need to do to morph any two images together is to manually define their correspondence points, so that we can map and group their features together.
+                    </p>
+                    <p>
+                        To do this, I used <a href="https://cal-cs180.github.io/fa23/hw/proj3/tool.html">this tool</a> to manually define correspondence points for major features on each of their faces. I plotted 99 points for each image.
+                    </p>
+                    <p>
+                        Afterwards, I computed the Delauney triangularization of each set of correspondence points.
+                    </p>
+                    <table class="img-table">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <img src="./images/currybama_delauney_plot.png" alt="Delauney Triangulation of Obama and Curry">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
                 </div>
                 <br>
                 
                 <div class="part2" id="part2">
                     <h3>Computing the "Mid-Way Face"</h3>
                     <p>
-                        Lorem ipsum dolor sit, amet consectetur adipisicing elit. A, dignissimos provident consequuntur animi debitis est eveniet placeat? Maiores deleniti odio illum pariatur natus. Ex nesciunt sit quia deserunt iusto. Temporibus?
+                        Now, we can begin to compute the "mid-way" face, otherwise known as the average face, between Barack Obama and Steph Curry.
                     </p>
+                    <p>
+                        First, we take a weighted average of image1's (Obama) correspondence points and image2's (Curry) correspondence points with the following formula:
+                    </p>
+                    <p class="eqt">
+                        (1 - warp_frac) * image1_corresp_pts + warp_frac * image2_corresp_pts
+                    </p>
+                    <p>
+                        Where <span class="eqt">warp_frac</span> is set to 0.5 to calculate the correspondence points of the mid-way face.
+                    </p>
+                    <p>
+                        Next, we compute the Delauney triangularization of the mid-way face's (aka <span class="eqt">avgImage</span>) correspondence points. 
+                    </p>
+                    <p>
+                        From there, we warp Curry and Obama's faces to the mid-way face using the Delauney triangularization of the averaged correspondence points.
+                    </p>
+                    <p>
+                        For each image (either Obama or Curry's), we retrieve the triangles from the Delauney triangularization of the mid-way face, find the matching triangle(s) in the source image's triangularization, and map + linearly interpolate pixels from inside each triangle in the mid-way face to the corresponding pixel in the triangle of source image.
+                    </p>
+
+                    <div class="img-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Obama warped to the average face</th>
+                                    <th>Curry warped to the average face</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <img src="./images/obama_warped.jpg" alt="Obama warped to the average face">
+                                    </td>
+                                    <td>
+                                        <img src="./images/curry_warped.jpg" alt="Curry warped to the average face">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <p> Once we have warped each face to the average face, we cross-dissolve both images together. We use the following equation below to generate the final mid-way image: </p>
+                    <p class="eqt">
+                        (1 - cd_val) * image1 + cd_val * image2
+                    </p>
+                    <p> 
+                        Where <span class="eqt">cd_val</span>, the cross-dissolve value, is set to 0.5 to equally blend both images together linearly.
+                    </p>
+                    <p>
+                        Below is our final mid-way face:
+                    </p>
+                    <div class="img-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Currybama</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <img src="./images/obama_curry_morphed.jpg" alt="Mid-way face between Curry and Obama">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
                 <br>
 
                 <div class="part3" id="part3">
                     <h3>The Morph Sequence</h3>
                     <p>
-                        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nemo vero sit, consequuntur provident impedit cupiditate! Adipisci labore delectus perspiciatis? Eius, doloremque. Culpa, suscipit adipisci. Optio quae assumenda repudiandae dicta eligendi.
+                        With the algorithm we described in Part 2, we can change <span class="eqt">warp_frac</span> and <span class="eqt">cd_cal</span> from [0, 1] to generate a morph sequence between Barack Obama and Steph Curry.
                     </p>
+                    <p>
+                        As a bonus feature, I also implemented a morph sequence where linearly space values from [0, 1] are mapped to a sigma function to generate a non-linear, smoother morph sequence.
+                    </p>
+                    <div class="img-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Linear Morph Sequence (45 frames)</th>
+                                    <th>Non-linear Morph Sequence (60 frames)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <img src="./images/comp_obama_curry_lin_boom.gif" alt="Linear morph sequence (45 frames, 30FPS)">
+                                    </td>
+                                    <td>
+                                        <img src="./images/comp_obama_curry_sig_boom.gif" alt="Sigma-mapped morph sequence (60 frames, 30FPS)">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h4>Morphing my face to Obama's: </h4>
+                    <div class="img-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>My face</th>
+                                    <th>Obama's face</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <img src="./images/me_obama_sized.jpg" alt="My face!">
+                                    </td>
+                                    <td>
+                                        <img src="./images/MS_Obama_CloseUp.jpg" alt="Obama's face">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="img-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Displaying correspondence points + triangularization:</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <img src="./images/me_obama_corresp.png" alt="Delauney triangularization of myself and Obama">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="img-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Mid-way face:</th>
+                                    <!-- <th>Morph sequence (60 frames): </th> -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <img src="./images/myself_and_obama_midway.jpg" alt="Mid-way face between myself and Obama">
+                                    </td>
+                                    <!-- <td>
+                                        <img src="./images/me_obama_morphed.gif" alt="Non-linear morph sequence between myself and Obama">
+                                    </td> -->
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="img-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Linear Morph Sequence (45 frames)</th>
+                                    <th>Non-linear Morph Sequence (60 frames)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <img src="./images/comp_obama_me_lin_boom.gif" alt="Linear morph sequence between myself and Obama">
+                                    </td>
+                                    <td>
+                                        <img src="./images/comp_obama_me_sig_boom.gif" alt="Sigma-mapped morph sequence between myself and Obama">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
                 <br>
                 
                 <div class="part4" id="part4">
                     <h3>The "Mean Face" of a Population</h3>
                     <p>
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Mollitia enim quasi dignissimos? Veritatis cum pariatur placeat officia libero, eveniet, minus aperiam nam accusantium totam, quibusdam voluptatum quo ut molestias ratione.
+                        Using the spatially normalized faces and corresponding facial key points (aka correspondence points) from the <a href="https://fei.edu.br/~cet/facedatabase.html">FEI Face database</a>, we can compute the average face of the dataset.
                     </p>
+                    <p>
+                        The dataset contains two types of facial expressions: neutral and smiling. Below are results from the dataset:
+                    </p>
+                    <div class="img-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>A neutral face</th>
+                                    <th>A smiling face</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <img src="./images/77a.jpg" alt="Neutral face">
+                                    </td>
+                                    <td>
+                                        <img src="./images/77b.jpg" alt="Smiling face">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Average neutral face</th>
+                                    <th>Average smiling face</th>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <img src="./images/average_neutral_face_FEI.jpg" alt="Average neutral face">
+                                    </td>
+                                    <td>
+                                        <img src="./images/average_smiling_face_FEI.jpg" alt="Average smiling face">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <img src="./images/avg_delauney.png" alt="Delauney triangularization plot of the average neutral face">
+                                    </td>
+                                    <td>
+                                        <img src="./images/avg_delauney_smile.png" alt="Delauney triangularization plot of the average smiling face">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>My face warped to the average neutral face: </th>
+                                    <th>The average neutral face warped to me</th>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <img src="./images/me_warped_to_neutral.jpg" alt="My face warped to the average neutral face">
+                                    </td>
+                                    <td>
+                                        <img src="./images/neutral_warped_to_me.jpg" alt="The average neutral face warped to me">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
                 <br>
 
                 <div class="part5" id="part5">
                     <h3>Caricatures: Extrapolating from the Mean</h3>
                     <p>
-                        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sit, et odio? Eum quisquam aliquid quos magnam? Voluptatibus, eius harum quos odit, quo itaque magnam perspiciatis doloremque dolore, vero corrupti expedita?
+                        Using the average faces calculated in Part 4, we can generate caricatures by extrapolating correspondence points from the mean face.
                     </p>
-                </div>
-                <br>
-
-                <div class="reflection" id="reflect">
-                    <h3>Reflection</h3>
                     <p>
-                        I had a ton of fun with this project! 
-                        
+                        To generate the correspondence points for the caricature, we take the weighted average between the correspondence points with the following formula:
                     </p>
+                    <p class="eqt">
+                        alpha * (avg_pts) + (1 - alpha) * (image_pts)
+                    </p>
+                    <p>
+                        Where <span class="eqt">alpha</span> is used to extrapolate from either the average face or the source image's correspondence points. A positive alpha value will move the correspondence points closer to the average face, while a negative alpha value will move the correspondence points closer to my face.
+                    </p>
+                    <p>
+                        Below are some results:
+                    </p>
+                    <div class="img-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>My face:</th>
+                                    <th>Caricature (alpha = -0.6):</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <img src="./images/me_smol.jpg" alt="Caricature of my face">
+                                    </td>
+                                    <td>
+                                        <img src="./images/my_caricature.jpg" alt="Caricature of my face">
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <thead>
+                                <tr>
+                                    <th>Obama's face:</th>
+                                    <th>Caricature:</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <img src="./images/obama_closeup_part4.jpg" alt="Obama's face">
+                                    </td>
+                                    <td>
+                                        <img src="./images/obama_caricature.jpg" alt="Caricature of Obama's face">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
                 <br>
 
+                <div class="part6" id="part6">
+                    <h3>Bells & Whistles</h3>
+                    <h4>Creating a PCA Basis for a Face Space</h4>
+                    <p>
+                        Using the FEI database once again, we can construct a PCA basis for the dataset's face space, and use it to try to reconstruct images from outside the set.
+                        This can be done by adding the mean (average) face computed by PCA to a linear combination of the eigenfaces computed by PCA.
+                    </p>
+                    <p>
+                        For this project, I used the first 170 images from the dataset (both neutral and smiling faces) to construct my PCA basis, leaving 30 images aside to use as a test set.
+                    </p>
+                    <p>
+                        Pictured below are the top 16 eigenfaces (sorted by decreasing explain variance values) from the PCA basis:
+                    </p>
+                    <div class="img-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Top 16 Eigenfaces</th>
+                                    <th>PCA Mean Face</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <img src="./images/top16eigenfaces.png" alt="Top 16 eigenfaces">
+                                    </td>
+                                    <td>
+                                        <img src="./images/pca_mean.png" alt="Mean eigenface computed from PCA">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p>
+                        We can observe the scree plot of the observed variance ratios of the eigenfaces to determine how many eigenfaces we need to reconstruct the test set with a certain level of accuracy.
+                    </p>
+                    <div class="img-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Scree plot of the observed variance ratios</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <img src="./images/scree_plot.png" alt="Scree plot of the observed variance ratios">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p>
+                        From the scree plot, we can see that the first 100 eigenfaces can be used to represent over 90% of the images in the dataset.
+                    </p>
+                    <p>
+                        To demonstrate this, I attempted to reconstruct images from within the training set using the top 15, 50, 75, and 170 eigenfaces.
+                    </p>
+                    <div class="img-table">
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <img src="./images/brazil_train_dude_pca.png" alt="Reconstruction of man from train set">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <img src="./images/brazil_dudette_train_pca.png" alt="Reconstruction of woman from train set">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p>
+                        As we can see, images from the training set can be perfectly reconstructed using all eigenfaces. However, using the top 75 eigenfaces offers us a reconstruction that contains most of the original images' features.
+                    </p>
+                    <p>
+                        We can use our PCA basis to try and reconstruct images from outside the training set. Below are attempts to reconstruct images from the test set using the eigenfaces from our PCA basis:
+                    </p>
+                    <div class="img-table">
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <img src="./images/brazil_dude_pca.png" alt="Reconstruction of man from test set">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <img src="./images/brazil_woman_pca.png" alt="Reconstruction of woman from test set">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <p>
+                        Below are 16 images from the test set, and reconstructed versions of them using all 170 eigenfaces:
+                    </p>
+
+                    <div class="img-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>First 16 images from the test set</th>
+                                    <th>Reconstruction of the 16 test set images</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <img src="./images/16_test_faces.png" alt="The first 16 images from the test set.">
+                                    </td>
+                                    <td>
+                                        <img src="./images/16_recon_test_faces.png" alt="Reconstruction of the first 16 images from the test set.">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <p>
+                        Here, we try to reconstruct images from outside both the training and test set using all 170 eigenfaces:
+                    </p>
+                    <div class="img-table">
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <img src="./images/my_face_reconstructed.png" alt="Reconstruction of my face">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <img src="./images/obama_face_reconstructed.png" alt="Reconstruction of Obama's face">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <br>
+                <br>
+
+                <div class="bonus" id="bonus">
+                    <h3>(spooky) 🎃 Bonus!</h3>
+                    <p>
+                        If you're not careful about matching the same corresponding triangles across images, you can get some pretty gnarly morphs! Below are some October-themed morphs I rendered after not properly matching corresponding points across these images and the average neutral face from part 4:
+                    </p>
+                    <div class="img-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>
+                                        Obama...?
+                                    </th>
+                                    <th>
+                                        Curry...?
+                                    </th>
+                                    <th>
+                                        Me...?
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <img src="./images/obama_nightmare_fuel.png" alt="Misaligned Obama morph">
+                                    </td>
+                                    <td>
+                                        <img src="./images/curry_nightmare_fuel.png" alt="Misaligned Curry morph">
+                                    </td>
+                                    <td>
+                                        <img src="./images/my_gigyas_moment.png" alt="Misaligned morph of my face">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        How many eyes even are there?
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
     
     <footer>
         <div class="copyright">made by ayra jafri</div>
-        <div><a href="/index.html">return home</a><div>
+        <div><a href="/index.html">return home</a></div>
     </footer>
 </body>
 </html>

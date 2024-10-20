@@ -169,7 +169,7 @@ h1 {
     /* align-items: center; */
     padding: 2em 4em;
     margin: auto;
-    width: 75%
+    width: 90%
 }
 
 .img-table {
@@ -177,7 +177,8 @@ h1 {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-        
+    overflow: scroll;
+    width: 100%;
 }
 
 /* .img-container {
@@ -197,6 +198,8 @@ h1 {
 
 table {
     border-spacing: 1em 1em;
+    overflow: scroll;
+    width: 80%;
 }
 
 td {

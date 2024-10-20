@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CS 180 Project 3</title>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+    <div class="main-container">
+        <div class="heading">
+            <div class="head-titles">
+                <div>
+                    <h1>CS 180</h1>
+                    <h1> Project 4:</h1>
+                    <h2>Image Mosaicing</h2>
+                </div>
+                <h3>October 19, 2024</h3>
+                <h3>Ayra Jafri</h3>
+            </div>
+            <!-- <br>
+            <br> -->
+            <div class="sidebar">
+                <h3>Table of Contents</h3>
+                <ul class="toc">
+                    <li><a href="#intro">0.  Project Overview</a></li>
+                    <li><a href="#part1">1.  Shooting Pictures</a></li>
+                    <li><a href="#part2">2.  Recovering Homographies</a></li>
+                    <li><a href="#part3">3.  Warping Images</a></li>
+                    <li><a href="#part4">4.  Image Rectification</a></li>
+                    <li><a href="#part5">5.  Blending Images Into a Mosaic</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="content">
+            <div class="main-content">
+                <!-- <div class="img-table">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td><img width="200px" src="./images/smootherBaracKurry.gif" alt="120 framed morph from Steph Curry to Barack Obama"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div> -->
+                <!-- Project Overview -->
+                <div class="overview">
+                    <h3 id="intro">Project Overview</h3>
+                    <p>
+                        This project explores how one we can take advantage of homographies, projectiev warping, and image blending techniques to create image mosaics / panoramas.
+                    </p>
+                </div>
+                <br>
+
+                <!-- Part 1 - Fun with Filters -->
+                <div class="part1">
+                    <h3 id="part1">Shooting Pictures</h3>
+                    <p>
+                        Below are the images we will stitch together:
+                    </p>
+                    <div class="img-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Left image</th>
+                                    <th>Center image</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><img src="./images/left.jpeg" alt="Left image"><figcaption>Li Ka Shing at sunset (over-exposed)</figcaption></td>
+                                    <td><img src="./images/center.jpeg" alt="Center image"><figcaption>Li Ka Shing at sunset</figcaption></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p>
+                        Note that the photos above are the actual-sized images. In the program however, images are downsized to approximately 1200px by 900px.
+                    </p>
+                    <p>
+                        We plot correspondence points on the center and left images. These will be used to compute the homography between the two images later on.
+                    </p>
+                    <p>
+                        Below are the correspondence points plotted on the center and left images. We make sure to spread out the selection of points across the image to ensure a more stable and accurate homography.
+                    </p>
+                    <table class="img-table">
+                        <thead>
+                            <tr>
+                                <th>Correspondence points (numbered in order):</th>
+                            </tr>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <img src="./images/corresp_points_berkeley.png" alt="Correspondence points of left and center images">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                </div>
+                <br>
+                
+                <div class="part2" id="part2">
+                    <h3>Recovering Homographies</h3>
+                    <p>
+                        We now warp the left image to the center image using a homography we can compute from the correspondence points. An example of a homographic matrix is shown below:
+                    </p>
+                    <table>
+                        <tr>
+                            <td>
+                                <img src="./images/homography_matrix.png" alt="Homography matrix">
+                            </td>
+                        </tr>
+                    </table>
+                    <p>
+                        By setting up out correspondence points as seen in the above matrix, we can solve for an approximate homographic matrix using least squares.
+                    </p>
+                </div>
+                <br>
+
+                <div class="part3" id="part3">
+                    <h3>Warping Images</h3>
+                    <p>
+                       By using the homography matrix mapping points from the left image to the center image, we can create a function that can warp all pixels in the left image to the center image (w.r.t. the homography matrix).
+                    </p>
+                    <p>
+                        We first compute the homography matrix from left correspondence points to the center correspondence points. 
+                        We then inverse-warp the corners of the left image to the center image to find the correct sized bounding box, using our newly calculated homography matrix.
+                        Finally, we assign points in the bounding box to the left image using the homography matrix, adjusting for negative coordinates as needed.
+                    </p>
+                    <p>
+                        With this, we can now warp images! Below is the result of warping the left image to the center image:
+                    </p>
+                    <div class="img-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Before warping:</th>
+                                    <th>After warping:</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <img src="./images/left_smol.jpg" alt="Actual left image used in program">
+                                    </td>
+                                    <td>
+                                        <img src="./images/left_to_center.jpg" alt="Left image after">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>    
+                </div>
+                <br>
+                
+                <div class="part4" id="part4">
+                    <h3>Image Rectification</h3>
+                    <p>
+                        Using the image warp function from part 3, we can rectify images by mapping corners of a skewed image to a rectangle.
+                    </p>
+                    <p>
+                        Below is an example of image rectification:
+                    </p>
+                    <div class="img-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>The skewed photo:</th>
+                                    <th>After rectification:</th>
+                                    <th>After (manual) cropping:</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <img src="./images/skewed_bk2.jpeg" alt="A skewed textbook.">
+                                    </td>
+                                    <td>
+                                        <img src="./images/book_nonskew.jpg" alt="Principles of Computer Vision textbook">
+                                    </td>
+                                    <td>
+                                        <img src="images/book_cropped.jpg" alt="Principles of Computer Vision textbook cropped">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <img src="./images/henryMatisse_smol.jpg" alt="A skewed postcard featuring artwork by Henry Matisse.">
+                                    </td>
+                                    <td>
+                                        <img src="./images/flowers_nonskew.jpg" alt="Flowers by Henry Matisse"><figcaption>Note that using least squared introduces numerical instability that can result in very skewed images.</figcaption>
+                                    </td>
+                                    <td>
+                                        <img src="images/flowers_nonskew_crop.jpg" alt="Flowers by Henry Matisse, cropped"><figcaption>"Flowers" by Henry Matisse</figcaption>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <br>
+
+                <div class="part5" id="part5">
+                    <h3>Blending Images Into a Mosaic</h3>
+                    <p>
+                        After warping images, we can now stitch then together to form a mosaic. In order to do this, we need to calculate the final image size of the mosaic to use as a bounding box.
+                        From there, we can place and align the images together. Afterwards, we can blend images using a multi-level blending approach with Laplacian pyramid and custom masks. 
+                    </p>
+                    <p>
+                        Note that blends may not always be smooth for many reasons. 
+                        Manually selecting correpsondence points can cause slight misalignments, for example. 
+                        Different lighting conditions across images can also result in visible seams even after blending, as we will see below. 
+                        These can be addressed through histogram normalization and/or multi-level blending with different masks depending on the frequency.
+                    </p>
+                    <p>
+                        Below are some results:
+                    </p>
+                    <div class="img-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Placing and aligning warped image to mosaic:</th>
+                                    <th>Placing and aligning non-warped image to mosaic:</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <img src="./images/pano_leftSkew_berkeley.jpg" alt="Warped left image">
+                                    </td>
+                                    <td>
+                                        <img src="./images/pano_centerLeftSkew_berkeley.jpg" alt="Non-warped left image">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="img-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Stitched mosaic:</th>
+                                    <th>Blended mosaic:</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <img src="./images/panorama_unblended_berkeley.jpg" alt="Stitched mosaic"><figcaption>Note the difference in exposure, causing a very visible seam.</figcaption>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p>
+                        Below are some more results:    
+                    </p>
+                    <div class="img-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Left image:</th>
+                                    <th>Center image:</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <img src="./images/left_night_smol.jpeg" alt="Berkeley at night">
+                                    </td>
+                                    <td>
+                                        <img src="./images/center_night_smol.jpeg" alt="Berkeley at night">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>
+                                    Mosaiced image:
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <img src="./images/panorama_unblended_night.jpg" alt="Berkeley at night">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <br>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="copyright">made by ayra jafri</div>
+        <div><a href="/index.html">return home</a></div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,279 @@
+
+/* html css specifically is a courtesy of 
+https://stackoverflow.com/questions/78169850/how-to-align-a-logo-on-the-left-and-navigation-on-the-right-using-html-and-css 
+*/
+
+html {
+    box-sizing: border-box;
+    font-family:
+      /* Newer browsers */
+      system-ui,
+      /* Safari for OS X and iOS (San Francisco) */
+      -apple-system,
+      /* Chrome < 56 for OS X (San Francisco) */
+      BlinkMacSystemFont,
+      /* Windows */
+      'Segoe UI',
+      /* Android */
+      Roboto,
+      /* Basic web fallback */
+      'Helvetica Neue',
+      Helvetica,
+      Arial,
+      sans-serif,
+      /* Emoji fonts */
+      'Apple Color Emoji',
+      'Segoe UI Emoji',
+      'Segoe UI Symbol',
+      'Noto Color Emoji';
+    font-size: 1em;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+    
+}
+
+:root {
+    /* Colors */
+    --ebony-clay: #1f2937;
+    --ebony-clay-translucent: rgba(31, 41, 55, 0.2);
+    --snow-drift: #F9FAF8;
+    --athens-gray: #E5E7EB;
+    --dodger-blue: #3882f6;
+    --bombay: #b6b8bc;
+  
+  
+    /* Font settings */
+    --system-fontSize-main: 48px;
+    --system-fontWeight-header: 900;
+    --system-fontSize-secondary: 18px;
+    --system-fontSize-logo: 24px;
+    --system-fontSize-infoHeader: 36px;
+    --system-fontWeight-infoHeader: 900;
+    --system-fontSize-quoteText: 36px;
+    --system-fontWeight-quoteText: 100;
+  
+    /*UI Colors */
+    --system-color-main-background: var(--ebony-clay);
+    --system-color-main-background-alt: var(--snow-drift);
+    --system-color-header: var(--ebony-clay);
+    --system-color-quote-background: var(--athens-gray);
+    --system-color-quote: var(--ebony-clay);
+  
+    --system-fontColor-main: var(--snow-drift);
+    --system-fontColor-second: var(--athens-gray);
+    
+    --button-color-action: var(--dodger-blue);
+    --button-color-border: var(--system-color-main-background-alt);
+  
+    --link-color-hover: var(--bombay)
+  }
+
+body {
+    /* display: flex;
+    flex-direction: column;
+    justify-content: center; */
+    background-color: var(--system-color-main-background-alt);
+    color: var(--system-color-header);
+    /* margin: 0px;
+    padding: 0px; */
+}
+
+a {
+    -o-transition: 0.25s;
+    -ms-transition: 0.25s;
+    -moz-transition: 0.25s;
+    -webkit-transition: 0.25s;
+    transition: 0.25s;
+    text-decoration: none;
+    color: var(--dodger-blue);
+}
+
+a:hover {
+    -o-transition: 0.5s;
+    -ms-transition: 0.5s;
+    -moz-transition: 0.5s;
+    -webkit-transition: 0.5s;
+    transition: 0.5s;
+    text-decoration: none;
+    color: var(--ebony-clay);
+}
+
+h1 {
+    margin: 0.5em 0em 0em 0em;
+}
+
+.heading {
+    /* display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center; */
+    
+    /* display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center; */
+    /* margin: 0px 20px 20px; */
+    padding: 0px 2em;
+    background-color: var(--system-color-quote-background);
+}
+
+.head-titles {
+    padding: 0em 0em 3em 0em;
+}
+
+.sidebar {
+    position: sticky;
+    top: 0; /* Adjust this value as needed */
+    height: auto;
+    padding: 0.25em 0;
+    background-color: var(--system-color-quote-background);
+}
+
+.sidebar ul {
+    padding: 0px;
+    margin: 0.5em 0;
+    padding-inline-start: 10px;
+    position: sticky;
+}
+
+.sidebar li {
+    list-style-type: none;
+    padding: 7px 0px;
+    margin: 0px;
+    font-weight: 600;
+}
+
+.main-container {
+    display: flex;
+    flex-direction: row;
+    /* justify-content: space-between; */
+    /* align-items: flex-start; */
+    margin: 0px;
+    padding: 0px;
+}
+
+.content {
+    padding: 1em;
+}
+
+.main-content {
+    /* border: 1px solid var(--system-color-main-background); */
+    /* display: flex;
+    flex-direction: column;
+    justify-content: center; */
+    /* align-items: center; */
+    padding: 2em 4em;
+    margin: auto;
+    width: 75%
+}
+
+.img-table {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+        
+}
+
+/* .img-container {
+    padding: 0.25em;
+    max-width: 1vw;
+    padding: 2em 4em;
+    width: 75%;
+} */
+
+.eqt {
+    font-family: monospace;
+    font-weight: 600;
+    font-size: 1.25em;
+    color: var(--dodger-blue);
+    text-align: center;
+}
+
+table {
+    border-spacing: 1em 1em;
+}
+
+td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+td img {
+    width: 100%;
+    height: auto;
+    min-width: 300px;
+    max-height: 900px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(44, 45, 47, 0.25);
+}
+
+img {
+    -o-transition: 0.3s;
+    -ms-transition: 0.3s;
+    -moz-transition: 0.3s;
+    -webkit-transition: 0.3s;
+    transition: 0.3s;
+}
+
+img:hover {
+    -o-transition: 0.3s;
+    -ms-transition: 0.3s;
+    -moz-transition: 0.3s;
+    -webkit-transition: 0.3s;
+    transition: 0.3s;
+    text-decoration: none;
+    /* color: var(--ebony-clay); */
+    box-shadow: 0 4px 8px rgba(44, 45, 47, 0.5);
+}
+
+footer {
+    flex-shrink: 0px;
+    text-align: center;
+    width: 100%;
+    padding: 1em;
+    margin-top: 1em;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #f0f0f0;
+}
+
+@media screen and (max-width: 768px) {
+    p {
+        padding-left: 1vw;
+    }
+    .content {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .head-titles {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        text-align: center;
+        padding: 0;
+    }
+
+   
+    .sidebar {
+        /* display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center; */
+        text-align: center;
+        /* padding: 0 0.5vw; */
+        
+    }
+
+    .main-container{
+        flex-direction: column;
+        /* align-items: center; */
+    }
+}

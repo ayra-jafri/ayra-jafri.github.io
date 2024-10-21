@@ -220,9 +220,12 @@
                     </p>
                     <p>
                         Note that blends may not always be smooth for many reasons. 
-                        Manually selecting correpsondence points can cause slight misalignments, for example. 
+                        Manually selecting correpsondence points can cause slight misalignments, for example, especially on large images. 
                         Different lighting conditions across images can also result in visible seams even after blending, as we will see below. 
                         These can be addressed through histogram normalization and/or multi-level blending with different masks depending on the frequency.
+                    </p>
+                    <p>
+                        I experimented with two blending methods: blending with a custom mask (where overlap between the two images in gray, and white only for the source image) and blending with a distance-based mask.
                     </p>
                     <p>
                         Below are some results:
@@ -261,12 +264,15 @@
                                     <td>
                                         <img src="./images/panorama_unblended_berkeley.jpg" alt="Stitched mosaic"><figcaption>Note the difference in exposure, causing a very visible seam.</figcaption>
                                     </td>
+                                    <td>
+                                        <img src="./images/berkeley_blend.jpg" alt="Blended mosaic">
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                     <p>
-                        Below are some more results:    
+                        Below are some more results. Note that images with very similar lighting have much smoother blends (see the last result):    
                     </p>
                     <div class="img-table">
                         <table>
@@ -299,7 +305,7 @@
                         <tbody>
                             <tr>
                                 <td>
-                                    <img src="./images/panorama_unblended_night.jpg" alt="Berkeley at night">
+                                    <img src="./images/night_blend_bwdist.jpg" alt="Berkeley at night">
                                 </td>
                             </tr>
                         </tbody>
@@ -330,14 +336,20 @@
                         <thead>
                             <tr>
                                 <th>
-                                    Mosaiced image:
+                                    Mosaiced image (pre-blending):
+                                </th>
+                                <th>
+                                    Mosaiced image (using bwdist masking):
                                 </th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <td>
-                                    <img src="./images/panorama_unblended_night.jpg" alt="Backyard">
+                                    <img src="./images/backyard_mosaic_unblended.jpg" alt="Backyard">
+                                </td>
+                                <td>
+                                    <img src="./images/backyard_blend.jpg" alt="Backyard">
                                 </td>
                             </tr>
                         </tbody>

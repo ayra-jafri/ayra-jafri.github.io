@@ -132,6 +132,7 @@ h1 {
     height: auto;
     padding: 0.25em 0;
     background-color: var(--system-color-quote-background);
+    font-size: 14px;
 }
 
 .sidebar ul {

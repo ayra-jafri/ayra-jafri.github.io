@@ -15,7 +15,7 @@
                     <h1> Project 4:</h1>
                     <h2>Image Mosaicing</h2>
                 </div>
-                <h3>October 19, 2024</h3>
+                <h3>October 29, 2024</h3>
                 <h3>Ayra Jafri</h3>
             </div>
             <!-- <br>
@@ -23,12 +23,23 @@
             <div class="sidebar">
                 <h3>Table of Contents</h3>
                 <ul class="toc">
+                    <li><a hreh="#intro">Part A: Image Warping and Mosaicing</a></li>
                     <li><a href="#intro">0.  Project Overview</a></li>
                     <li><a href="#part1">1.  Shooting Pictures</a></li>
                     <li><a href="#part2">2.  Recovering Homographies</a></li>
                     <li><a href="#part3">3.  Warping Images</a></li>
                     <li><a href="#part4">4.  Image Rectification</a></li>
                     <li><a href="#part5">5.  Blending Images Into a Mosaic</a></li>
+                    <br>
+                    <li><a href="#part6">Part B: Feature Matching for Autostitching</a></li>
+                    <li><a href="#part6">1.  Detecting Corner Features in Images</a></li>
+                    <li><a href="#part7">2.  Adaptive Non-Maximal Suppression (ANMS)</a></li>
+                    <li><a href="#part8">3.  Extracting Feature Descriptors</a></li>
+                    <li><a href="#part9">4.  Matching Feature Descriptors</a></li>
+                    <li><a href="#part10">5.  Feature Matching with RANSAC</a></li>
+                    <li><a href="#part11">6.  Autostitching Images (Results)</a></li>
+                    <li><a href="#part12">7.  Mini Reflection</a></li>
+
                 </ul>
             </div>
         </div>
@@ -356,6 +367,168 @@
                     </table>
                 </div>
                 <br>
+
+                <div class="part6" id="part6">
+                    <h3>Detecting Corner Features in Images</h3>
+                    <p>
+                        To begin automating the above process, we first need to automatically detect potential correspondence points in an image. One way to accomplish this is through Harris corner detection.
+                    </p>
+                    <p>
+                        Pictured below are Harris corners detected on the following image of a backyard:
+                    </p>
+                    <div class="img-table">
+                        <table>
+                            <tr>
+                                <td>
+                                    <img src="./images/backyard_harris_color.png" alt="Harris Points of my backyard">
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <p>As we can see, there are far too many potential correspondence points to consider. Thus, we need a way to filter out poor correspondence points.</p>
+                </div>
+                <br>
+
+                <div class="part7" id="part7">
+                    <h3>Adaptive Non-Maximal Suppression (ANMS)</h3>
+                    <p>
+                        We will use ANMS (Adaptive Non-Maximal Suppression) to filter out poor correspondence points.
+                    </p>
+                    <p>
+                        Pictured below are the remaining correspondence points after applying ANMS:
+                    </p>
+                    <div class="img-table">
+                        <table>
+                            <tr>
+                                <td>
+                                    <img src="./images/backyard_anms_center_color.png" alt="ANMS results">
+                                </td>
+                                <td>
+                                    <img src="./images/backyard_left_anms.png" alt="ANMS results for left image">
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <br>
+
+                <div class="part8" id="part8">
+                    <h3>Extracting Feature Descriptors</h3>
+                    <p>
+                        We now extract "features" corresponding to each correspondence point by taking a 40x40 pixel window centered on each point. We then downsize and normalize the features to prepare them for feature matching.
+                    </p>
+                    <p>
+                        Pictured below are 25 features from the center backyard image before, after downsizing, and after normalization:
+                    </p>
+                    
+                    <div class="img-table">
+                        <table>
+                            <tr>
+                                <td>
+                                    <img src="./images/features_reg.png" alt="First 25 features">
+                                </td>
+                                <td>
+                                    <img src="./images/features_smol.png" alt="Features after downsizing">
+                                </td>
+                                <td>
+                                    <img src="./images/features_norm.png" alt="Features after normalization">
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <br>
+
+                <div class="part9" id="part9">
+                    <h3>Matching Feature Descriptors</h3>
+                    <p>
+                        We now match features between the center and left images by flattening each feature into a 1D array, and finding its respective two nearest neighbors (aka neighboring features) in the other image. 
+                        We use the cosine distance metric due to the large feature size of our flattened image vectors.
+                        We take advantage of Lowe's trick when determining potential matching pairs.
+
+                    </p>
+                    <p>
+                        Pictured below are the matching pairs of features/correspondence points between the center and left images after feature matching. Note that there are still false positives and incorrect matches (for now).
+                    </p>
+                    <div class="img-table">
+                        <table>
+                            <tr>
+                                <td>
+                                    <img src="./images/backyard_matching_points.png" alt="ANMS results">
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <br>
+
+                <div class="part10" id="part10">
+                    <h3>Feature Matching with RANSAC</h3>
+                    <p>
+                        To eliminate false poisitives and outliers, and retain only inliers, we use RANSAC (Random Sample Consensus) to find the best inliers between the two images to use for homography when mosaicing images.
+                        These inliers will be our final correspondence point pairs.
+                    </p>
+                    <p>
+                        Pictured below are the final matching pairs of correspondence points after running RANSAC:
+                    </p>
+                    <div class="img-table">
+                        <table>
+                            <tr>
+                                <td>
+                                    <img src="./images/ransac_backyard.png" alt="RANSAC results">
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <br>
+
+                <div class="part11" id="part11">
+                    <h3>Autostitching Images (Results)</h3>
+                    <p>
+                        Pictured below are some results from the new auto-stitching algorithm:
+                    </p>
+                    <p>
+                        Note: Unfortunately, image blending no longer reliably works due to a current bug in the mask generation function, so some mosaics may appear to be unblended. :(
+                    </p>
+                    <div class="img-table">
+                        <table>
+                            <tr>
+                                <td>
+                                    <img src="./images/auto_mosaic_full_epicBackyard.jpg" alt="final backyard mosaic">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <img src="./images/sunset_mosaic_unblended copy.jpg" alt="sunset from a window">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <img src="./images/berkeley_night_mosaic_unblended copy.jpg" alt="sunset from a window">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <img src="./images/auto_mosaic_full_roomWow.jpg" alt="a living room mosaic">
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <br>
+
+                <div class="part12" id="part12">
+                    <h3>Mini Reflection</h3>
+                    <p>
+                        This was a very lengthy and fulfilling project. I most enjoyed firguring out how to implement ANMS and RANSAC, as it ws very satisfying to be able to automate all the work from part 1.
+                    </p>
+                    
+                </div>
+                <br>
+
+
             </div>
         </div>
     </div>

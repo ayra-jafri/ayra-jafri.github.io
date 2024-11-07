@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CS 180 Project 5</title>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+    <div class="main-container">
+        <div class="heading">
+            <div class="head-titles">
+                <div>
+                    <h1>CS 180</h1>
+                    <h1> Project 5:</h1>
+                    <h2>Fun With Diffusion Models</h2>
+                </div>
+                <h3>November 7, 2024</h3>
+                <h3>Ayra Jafri</h3>
+            </div>
+            <!-- <br>
+            <br> -->
+            <div class="sidebar">
+                <h3>Table of Contents</h3>
+                <ul class="toc">
+                    <li><a hreh="#intro">Part A: The Power of Diffusion Models</a></li>
+                    <li><a href="#intro">0.  Project Overview</a></li>
+                    <li><a href="#part1">1.  The Forward Process & Classical Denoising</a></li>
+                    <li><a href="#part2">2.  One-Step Denoising</a></li>
+                    <li><a href="#part3">3.  Iterative Denoising</a></li>
+                    <li><a href="#part4">4.  Diffusion Model Sampling</a></li>
+                    <li><a href="#part5">5.  Classifier-Free Guidance</a></li>
+                    <li><a href="#part6">6.  Image-to-Image Translation</a></li>
+                    <li><a href="#part7">7.  Editing Hand-Drawn and Web Images</a></li>
+                    <li><a href="#part8">8.  In-painting</a></li>
+                    <li><a href="#part9">9.  Text-Conditional Image-to-Image Translation</a></li>
+                    <li><a href="#part10">10.  Visual Anagrams</a></li>
+                    <li><a href="#part10">11.  Hybrid Images</a></li>
+                    <br>
+                    <!-- <li><a href="#part6">Part B: Feature Matching for Autostitching</a></li>
+                    <li><a href="#part6">1.  Detecting Corner Features in Images</a></li>
+                    <li><a href="#part7">2.  Adaptive Non-Maximal Suppression (ANMS)</a></li>
+                    <li><a href="#part8">3.  Extracting Feature Descriptors</a></li>
+                    <li><a href="#part9">4.  Matching Feature Descriptors</a></li>
+                    <li><a href="#part10">5.  Feature Matching with RANSAC</a></li>
+                    <li><a href="#part11">6.  Autostitching Images (Results)</a></li>
+                    <li><a href="#part12">7.  Mini Reflection</a></li> -->
+
+                </ul>
+            </div>
+        </div>
+        <div class="content">
+            <div class="main-content">
+                <!-- <div class="img-table">
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td><img width="200px" src="./images/smootherBaracKurry.gif" alt="120 framed morph from Steph Curry to Barack Obama"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div> -->
+                <!-- Project Overview -->
+                <div class="overview">
+                    <h3 id="intro">Project Overview</h3>
+                    <p>
+                        This project explores how one we can take advantage of homographies, projectiev warping, and image blending techniques to create image mosaics / panoramas.
+                    </p>
+                </div>
+                <br>
+
+                <!-- Part 1 - Fun with Filters -->
+                <div class="part1">
+                    <h3 id="part1">The Forward Process & Classical Denoising</h3>
+                    <p>
+                       Lorem ipsum dolor sit amet, consectetur adipiscing elit
+                    </p>
+                    <!-- <div class="img-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Left image</th>
+                                    <th>Center image</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><img src="./images/left.jpeg" alt="Left image"><figcaption>Li Ka Shing at sunset (over-exposed)</figcaption></td>
+                                    <td><img src="./images/center.jpeg" alt="Center image"><figcaption>Li Ka Shing at sunset</figcaption></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div> -->
+                </div>
+                <br>
+                
+                <div class="part2" id="part2">
+                    <h3>One-Step Denoising</h3>
+                    <p>
+                        lorem ipsum dolor sit amet, consectetur adipiscing elit
+                    </p>
+                    <!-- <table>
+                        <tr>
+                            <td>
+                                <img src="./images/homography_matrix.png" alt="Homography matrix">
+                            </td>
+                        </tr>
+                    </table> -->
+                    
+                </div>
+                <br>
+
+                <div class="part3" id="part3">
+                    <h3>Iterative Denoising</h3>
+                    
+                    <p>
+                        lorem ipsum dolor sit amet, consectetur adipiscing elit
+                    </p>
+                    <!-- <div class="img-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Before warping:</th>
+                                    <th>After warping:</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <img src="./images/left_smol.jpg" alt="Actual left image used in program">
+                                    </td>
+                                    <td>
+                                        <img src="./images/left_to_center.jpg" alt="Left image after">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>     -->
+                </div>
+                <br>
+                
+                <div class="part4" id="part4">
+                    <h3>Diffusion Model Sampling</h3>
+                    <p>
+                        lorem ipsum dolor sit amet, consectetur adipiscing elit
+                    </p>  
+                </div>
+                <br>
+
+                <div class="part5" id="part5">
+                    <h3>Classifer-Free Guidance</h3>
+                    <p>
+                        lorem ipsum dolor sit amet, consectetur adipiscing elit
+                    </p>  
+                </div>
+                <br>
+
+                <div class="part12" id="part12">
+                    <h3>Reflection</h3>
+                    <p>
+                        Fun things are fun (filler text).
+                    </p>
+                    
+                </div>
+                <br>
+
+
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="copyright">made by ayra jafri</div>
+        <div><a href="/index.html">return home</a></div>
+    </footer>
+</body>
+</html>

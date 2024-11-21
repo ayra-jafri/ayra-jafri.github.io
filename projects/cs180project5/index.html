@@ -15,7 +15,7 @@
                     <h1> Project 5:</h1>
                     <h2>Fun With Diffusion Models</h2>
                 </div>
-                <h3>November 7, 2024</h3>
+                <h3>November 19, 2024</h3>
                 <h3>Ayra Jafri</h3>
             </div>
             <!-- <br>
@@ -23,28 +23,35 @@
             <div class="sidebar">
                 <h3>Table of Contents</h3>
                 <ul class="toc">
-                    <li><a hreh="#intro">Part A: The Power of Diffusion Models</a></li>
-                    <li><a href="#intro">0.  Project Overview</a></li>
-                    <li><a href="#part1">1.  The Forward Process & Classical Denoising</a></li>
-                    <li><a href="#part2">2.  One-Step Denoising</a></li>
-                    <li><a href="#part3">3.  Iterative Denoising</a></li>
-                    <li><a href="#part4">4.  Diffusion Model Sampling</a></li>
-                    <li><a href="#part5">5.  Classifier-Free Guidance</a></li>
-                    <li><a href="#part6">6.  Image-to-Image Translation</a></li>
-                    <li><a href="#part7">7.  Editing Hand-Drawn and Web Images</a></li>
-                    <li><a href="#part8">8.  In-painting</a></li>
-                    <li><a href="#part9">9.  Text-Conditional Image-to-Image Translation</a></li>
-                    <li><a href="#part10">10.  Visual Anagrams</a></li>
-                    <li><a href="#part10">11.  Hybrid Images</a></li>
+                    <!-- <li><a href="#intro">0.  Project Overview</a></li> -->
+                    <li><a href="#intro">Part A: The Power of Diffusion Models</a></li>
+                    <li><a href="#part1">Part 1:  Sampling Loops</a></li>
+                    <li><a href="#part1">1.1.  Implementing the Forward Process</a></li>
+                    <li><a href="#part2">1.2.  Classical Denoising</a></li>
+                    <li><a href="#part3">1.3.  One-Step Denoising</a></li>
+                    <li><a href="#part4">1.4.  Iterative Denoising</a></li>
+                    <li><a href="#part5">1.5.  Diffusion Model Sampling</a></li>
+                    <li><a href="#part6">1.6.  Classifier-Free Guidance (CFG)</a></li>
+                    <li><a href="#part7a">1.7.  Image-to-image Translation</a></li>
+                    <li><a href="#part7">1.7.1  Editing Hand-Drawn and Web Images</a></li>
+                    <li><a href="#part8">1.7.2.  Inpainting</a></li>
+                    <li><a href="#part9">1.7.3.  Text-Conditional Image-to-image Translation</a></li>
+                    <li><a href="#part10">1.8.  Visual Anagrams</a></li>
+                    <li><a href="#part11">1.9.  Hybrid Images</a></li>
                     <br>
-                    <!-- <li><a href="#part6">Part B: Feature Matching for Autostitching</a></li>
-                    <li><a href="#part6">1.  Detecting Corner Features in Images</a></li>
-                    <li><a href="#part7">2.  Adaptive Non-Maximal Suppression (ANMS)</a></li>
-                    <li><a href="#part8">3.  Extracting Feature Descriptors</a></li>
-                    <li><a href="#part9">4.  Matching Feature Descriptors</a></li>
-                    <li><a href="#part10">5.  Feature Matching with RANSAC</a></li>
-                    <li><a href="#part11">6.  Autostitching Images (Results)</a></li>
-                    <li><a href="#part12">7.  Mini Reflection</a></li> -->
+                    <li><a href="#part12">Part B: Diffusion Models from Scratch!</a></li>
+                    <li><a href="#part13">Part 1. Training a Single-Step Denoising UNet</a></li>
+                    <li><a href="#part14">1.1.  Implementing the UNet</a></li>
+                    <li><a href="#part15">1.2.  Using the UNet to Train a Denoiser</a></li>
+                    <li><a href="#part16">1.2.1.  Training</a></li>
+                    <li><a href="#part17">1.2.2.  Out-of-Distribution Testing</a></li>
+                    <li><a href="#part18">Part 2. Training a Diffusion Model</a></li>
+                    <li><a href="#part19">2.1.  Adding Time Conditioning to UNet</a></li>
+                    <li><a href="#part20">2.2.  Training the UNet</a></li>
+                    <li><a href="#part21">2.3  Sampling from the UNet</a></li>
+                    <li><a href="#part22">2.4.  Adding Class-Conditioning to UNet</a></li>
+                    <li><a href="#part23">2.5.  Sampling from the Class-Conditioned UNet</a></li>    
+                     
 
                 </ul>
             </div>
@@ -61,106 +68,839 @@
                     </table>
                 </div> -->
                 <!-- Project Overview -->
-                <div class="overview">
+                <!-- <div class="overview">
                     <h3 id="intro">Project Overview</h3>
                     <p>
-                        This project explores how one we can take advantage of homographies, projectiev warping, and image blending techniques to create image mosaics / panoramas.
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec auctor, nunc nec
                     </p>
                 </div>
-                <br>
-
-                <!-- Part 1 - Fun with Filters -->
-                <div class="part1">
-                    <h3 id="part1">The Forward Process & Classical Denoising</h3>
+                <br> -->
+                <div class="intro">
+                    <h1 id="intro">Part A: The Power of Diffusion Models</h1>
                     <p>
-                       Lorem ipsum dolor sit amet, consectetur adipiscing elit
+                        In this part, we write our own sampling loops using the DeepFloyd IF diffusion model to denoise input images, and generate new images, including image-to-image translations, inpainting/edits, visual anagrams, and hybrid images.
                     </p>
-                    <!-- <div class="img-table">
+                </div>
+
+                <div class="part1">
+                    <h2 id="part1">Sampling Loops</h2>
+                    <h3 id="part1">Implementing the Forward Process</h3>
+                    <p>
+                       We first begin by implementing the forward process for our diffusion model, which takes in a clean image, and scales and denoises it.
+                    </p>
+                    <div class="img-table">
                         <table>
                             <thead>
                                 <tr>
-                                    <th>Left image</th>
-                                    <th>Center image</th>
+                                    <th>Original Image</th>
+                                    <th>Noise Level 250</th>
+                                    <th>Noise Level 500</th>
+                                    <th>Noise Level 750</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td><img src="./images/left.jpeg" alt="Left image"><figcaption>Li Ka Shing at sunset (over-exposed)</figcaption></td>
-                                    <td><img src="./images/center.jpeg" alt="Center image"><figcaption>Li Ka Shing at sunset</figcaption></td>
+                                    <td><img src="./images/og_camp.png" alt="Original Image"><figcaption></figcaption></td>
+                                    <td><img src="./images/camp_t250_noise.png" alt="Campanille Noise 250"><figcaption></figcaption></td>
+                                    <td><img src="./images/camp_t500_noise.png" alt="Campanille Noise 500"><figcaption></figcaption></td>
+                                    <td><img src="./images/camp_t750_noise.png" alt="Campanille Noise 750"><figcaption></figcaption></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <br>
+                
+                <div class="part2" id="part2">
+                    <h3>Classical Denoising</h3>
+                    <p>
+                        We first try to denoise the image via Gaussian blurring:
+                    </p>
+                    <div class="img-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Original Image</th>
+                                    <th>Noise Level 250</th>
+                                    <th>Noise Level 500</th>
+                                    <th>Noise Level 750</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><img src="./images/og_camp.png" alt="Original Image"><figcaption></figcaption></td>
+                                    <td><img src="./images/camp_t250_gaussDenoise.png" alt="Campanille denoise Gaussian 250"><figcaption></figcaption></td>
+                                    <td><img src="./images/camp_t500_gaussDenoise.png" alt="Campanille denoise Gaussian 500"><figcaption></figcaption></td>
+                                    <td><img src="./images/camp_t750_gaussDenoise.png" alt="Campanille denoise Gaussian 750"><figcaption></figcaption></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                </div>
+                <br>
+
+                <div class="part3" id="part3">
+                    <h3>One-Step Denoising</h3>
+                    <p>
+                        We now use the pre-trained diffusion model to denoise the image with text conditioning, using the prompt embedding "a high quality photo".
+                    </p>
+                    <div class="img-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Original Image</th>
+                                    <th>One-Step Denoise at Level 250</th>
+                                    <th>One-Step Denoise at Level 500</th>
+                                    <th>One-Step Denoise at Level 750</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><img src="./images/og_camp.png" alt="Original Image"><figcaption></figcaption></td>
+                                    <td><img src="./images/camp_onestepDenoise_t250.png" alt="Campanille denoise Gaussian 250"><figcaption></figcaption></td>
+                                    <td><img src="./images/camp_onestepDenoise_t500.png" alt="Campanille denoise Gaussian 500"><figcaption></figcaption></td>
+                                    <td><img src="./images/camp_onestepDenoise_t750.png" alt="Campanille denoise Gaussian 750"><figcaption></figcaption></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <br>
+                
+                <div class="part4" id="part4">
+                    <h3>Iterative Denoising</h3>
+                    <p>
+                        We now iteravely denoise the image with strided timesteps, starting from 1000 iterations and using a stride of 30.
+                    </p>  
+                    <div class="img-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Original Image</th>
+                                    <th>Noise Level 90</th>
+                                    <th>Noise Level 240</th>
+                                    <th>Noise Level 540</th>
+                                    <th>Noise Level 690</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><img src="./images/og_camp.png" alt="Original Image"><figcaption></figcaption></td>
+                                    <td><img src="./images/p14_camp_iterDenoise_t90.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p14_camp_iterDenoise_t240.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p14_camp_iterDenoise_t540.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p14_camp_iterDenoise_t690.png" alt=""><figcaption></figcaption></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="img-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Original Image</th>
+                                    <th>Iteratively Denoised Image</th>
+                                    <th>One-Step Denoised Campanile</th>
+                                    <th>Gaussian Blurred Campanile</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><img src="./images/og_camp.png" alt="Original Image"><figcaption></figcaption></td>
+                                    <td><img src="./images/p14_camp_iterDenoise_t0.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p14_camp_oneStepDenoise.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p14_camp_gaussianDenoise.png" alt=""><figcaption></figcaption></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <br>
+
+                <div class="part5" id="part5">
+                    <h3>Diffusion Model Sampling</h3>
+                    <p>
+                        We now show use iterave denoising to generate images from pure noise. Below are some results:
+                    </p>  
+                    <div class="img-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Sample 1</th>
+                                    <th>Sample 2</th>
+                                    <th>Sample 3</th>
+                                    <th>Sample 4</th>
+                                    <th>Sample 5</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><img src="./images/p15_img1.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p15_img2.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p15_img3.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p15_img4.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p15_img5.png" alt=""><figcaption></figcaption></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <br>
+
+                <div class="part6" id="part6">
+                    <h3>Classifier-Free Guidance (CFG)</h3>
+                    <p>
+                        In order to generate better quality images, we implement classifier-free guidance, with a null prompt for the unconditional guidance for CFG.
+                    </p>  
+                    <div class="img-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Sample 1 with CFG</th>
+                                    <th>Sample 2 with CFG</th>
+                                    <th>Sample 3 with CFG</th>
+                                    <th>Sample 4 with CFG</th>
+                                    <th>Sample 5 with CFG</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><img src="./images/p16_img1.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p16_img2.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p16_img3.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p16_img4.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p16_img5.png" alt=""><figcaption></figcaption></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <br>
+
+                <div class="part7a" id="part7a">
+                    <h3>Image-to-image Translation</h3>
+                    <p>
+                        For this part, we will take the original image of the Campanille, add noise to it, and then denoise it using iterative CFG, with differing levels of noise. This will function as a way to "edit" the original image.
+                    </p>  
+                    <div class="img-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>SDEdit with i_start=1</th>
+                                    <th>SDEdit with i_start=3</th>
+                                    <th>SDEdit with i_start=5</th>
+                                    <th>SDEdit with i_start=7</th>
+                                    <th>SDEdit with i_start=10</th>
+                                    <th>SDEdit with i_start=20</th>
+                                    <th>Original Image</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><img src="./images/p171_i0.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p171_i3.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p171_i5.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p171_i7.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p171_i10.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p171_i20.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/og_camp.png" alt=""><figcaption></figcaption></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="img-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>SDEdit with i_start=1</th>
+                                    <th>SDEdit with i_start=3</th>
+                                    <th>SDEdit with i_start=5</th>
+                                    <th>SDEdit with i_start=7</th>
+                                    <th>SDEdit with i_start=10</th>
+                                    <th>SDEdit with i_start=20</th>
+                                    <th>Original Image</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><img src="./images/p17_cat_i1.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p17_cat_i3.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p17_cat_i5.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p17_cat_i7.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p17_cat_i10.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p17_cat_i20.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/kote-puerto.jpg" alt=""><figcaption></figcaption></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="img-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>SDEdit with i_start=1</th>
+                                    <th>SDEdit with i_start=3</th>
+                                    <th>SDEdit with i_start=5</th>
+                                    <th>SDEdit with i_start=7</th>
+                                    <th>SDEdit with i_start=10</th>
+                                    <th>SDEdit with i_start=20</th>
+                                    <th>Original Image</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><img src="./images/p17_dog_i1.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p17_dog_i3.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p17_dog_i5.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p17_dog_i7.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p17_dog_i10.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p17_dog_i20.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/janosch-diggelmann.jpg" alt=""><figcaption></figcaption></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <br>
+
+                <div class="part7" id="part7">
+                    <h3>Editing Hand-Drawn and Web Images</h3>
+                    <p>
+                        We can also apply this process with hand-drawn images, such as the results below:
+                    </p>
+                    <div class="img-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>SDEdit with i_start=1</th>
+                                    <th>SDEdit with i_start=3</th>
+                                    <th>SDEdit with i_start=5</th>
+                                    <th>SDEdit with i_start=7</th>
+                                    <th>SDEdit with i_start=10</th>
+                                    <th>SDEdit with i_start=20</th>
+                                    <th>Original Image</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><img src="./images/p171_flower_i1.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p171_flower_i3.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p171_flower_i5.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p171_flower_i7.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p171_flower_i10.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p171_flower_i20.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p171_flower_og.png" alt=""><figcaption></figcaption></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>  
+                    <div class="img-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>SDEdit with i_start=1</th>
+                                    <th>SDEdit with i_start=3</th>
+                                    <th>SDEdit with i_start=5</th>
+                                    <th>SDEdit with i_start=7</th>
+                                    <th>SDEdit with i_start=10</th>
+                                    <th>SDEdit with i_start=20</th>
+                                    <th>Original Image</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><img src="./images/p171_catDraw_i1.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p171_catDraw_i3.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p171_catDraw_i5.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p171_catDraw_i7.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p171_catDraw_i10.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p171_catDraw_i20.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/cat_doodle.png" alt=""><figcaption></figcaption></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="img-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>SDEdit with i_start=1</th>
+                                    <th>SDEdit with i_start=3</th>
+                                    <th>SDEdit with i_start=5</th>
+                                    <th>SDEdit with i_start=7</th>
+                                    <th>SDEdit with i_start=10</th>
+                                    <th>SDEdit with i_start=20</th>
+                                    <th>Original Image</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><img src="./images/p171_hill_i1.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p171_hill_i3.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p171_hill_i5.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p171_hill_i7.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p171_hill_i10.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p171_hill_i20.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/small_hill.png" alt=""><figcaption></figcaption></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <br>
+
+                <div class="part8" id="part8">
+                    <h3>Inpainting</h3>
+                    <p>
+                        We can use the same procedure to implement inpainting by taking advantage of image masks. Below are some results:
+                    </p>  
+                    <div class="img-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Original Image</th>
+                                    <th>Mask</th>
+                                    <th>Hole to Fill</th>
+                                    <th>Image Inpainted</th>  
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><img src="./images/og_camp.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p172_camp_mask.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p172_camp_fill.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p172_camp_inpaint.png" alt=""><figcaption></figcaption></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="img-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Original Image</th>
+                                    <th>Mask</th>
+                                    <th>Hole to Fill</th>
+                                    <th>Image Inpainted</th>  
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><img src="./images/p171_hill_og.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p172_hill_mask.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p172_hill_hole.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p172_hill_inpaint.png" alt=""><figcaption></figcaption></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <br>
+
+                <div class="part9" id="part9">
+                    <h3>Text-Conditional Image-to-image Translation</h3>
+                    <p>
+                        We will now return to image-to-image translation, except now we will guide the model with custom embedded prompts, rather than simply "a high-quality photo". Below are some results:
+                    </p>  
+                    <h4>"A rocket ship" with an image of the Campanille: </h4>
+                    <div class="img-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>SDEdit with i_start=1</th>
+                                    <th>SDEdit with i_start=3</th>
+                                    <th>SDEdit with i_start=5</th>
+                                    <th>SDEdit with i_start=7</th>
+                                    <th>SDEdit with i_start=10</th>
+                                    <th>SDEdit with i_start=20</th>
+                                    <th>Original Image</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><img src="./images/p173_pencilCamp_i1.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p173_pencilCamp_i3.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p173_pencilCamp_i5.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p173_pencilCamp_i7.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p173_pencilCamp_i10.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p173_pencilCamp_i20.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/og_camp.png" alt=""><figcaption></figcaption></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h4>"An oil-painting of a snowy village" and a hand-drawn thumbnail of a hill:</h4>
+                    <div class="img-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>SDEdit with i_start=1</th>
+                                    <th>SDEdit with i_start=3</th>
+                                    <th>SDEdit with i_start=5</th>
+                                    <th>SDEdit with i_start=7</th>
+                                    <th>SDEdit with i_start=10</th>
+                                    <th>SDEdit with i_start=20</th>
+                                    <th>Original Image</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><img src="./images/p173_villageHill_i1.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p173_villageHill_i3.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p173_villageHill_i5.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p173_villageHill_i7.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p173_villageHill_i10.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p173_villageHill_i20.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/small_hill.png" alt=""><figcaption></figcaption></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    h4>"A pencil" and a photo of a blocky flower:</h4>
+                    <div class="img-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>SDEdit with i_start=1</th>
+                                    <th>SDEdit with i_start=3</th>
+                                    <th>SDEdit with i_start=5</th>
+                                    <th>SDEdit with i_start=7</th>
+                                    <th>SDEdit with i_start=10</th>
+                                    <th>SDEdit with i_start=20</th>
+                                    <th>Original Image</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><img src="./images/p173_pencilFlower_i1.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p173_pencilFlower_i3.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p173_pencilFlower_i5.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p173_pencilFLower_i7.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p173_pencilFlower_i10.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p173_pencilFlower_i20.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/flower.jpg" alt=""><figcaption></figcaption></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <br>
+
+                <div class="part10" id="part10">
+                    <h3>Visual Anagrams</h3>
+                    <p>
+                        Now, we will alter our current model to generate visual anagrams, where given two prompts, one prompt is visible when the image is rightside-up, and the other prompt is visible when the image is upside-down. Below are some results:
+                    </p>  
+                    <div class="img-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>"An Oil Painting of People Around a Campfire"</th>
+                                    <th>An Oil Painting of an Old Man</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><img src="./images/p18_campfire_oldman.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p18_campfire_oldman_flip.png" alt=""><figcaption></figcaption></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="img-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>"An Oil Painting of an Old Man"</th>
+                                    <th>"An Oil Painting of a Snowy Mountain Village"</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><img src="./images/p18_villag_oldman_flip.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p18_villag_oldman.png" alt=""><figcaption></figcaption></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="img-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>"An Oil Painting of People Around a Campfire"</th>
+                                    <th>"An Oil Painting of a Snowy Mountain Village"</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><img src="./images/p18_village_campfire.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p18_village_campfire_flip.png" alt=""><figcaption></figcaption></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <br>
+
+                <div class="part11" id="part11">
+                    <h3>Hybrid Images</h3>
+                    <p>
+                        Finally, we will alter the model so that it can generate hybrid images, where an image appears to be one prompt from up close, and another from far away. Below are some results:
+                    </p>  
+                    <div class="img-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>"A Lithograph of a waterfall"</th>
+                                    <th>"An Oil Painting of People Around a Campfire"</th>
+                                    <th>"An Oil Painting of a Snowy Mountain Village"</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><img src="./images/p19_skull_waterfall.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p19_skullCampfire_again.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p19_village_oldMan_1.png" alt=""><figcaption></figcaption></td>
+                                </tr>
+                            </tbody>
+                            <thead>
+                                <tr>
+                                    <th>"A Lithograph of a Skull"</th>
+                                    <th>"A Lithograph of a Skull"</th>
+                                    <th>"An Oil Painting of an Old Man"</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><img class="blurMe" src="./images/p19_skull_waterfall.png" alt=""><figcaption></figcaption></td>
+                                    <td><img class="blurMe" src="./images/p19_skullCampfire_again.png" alt=""><figcaption></figcaption></td>
+                                    <td><img class="blurMeMore" src="./images/p19_village_oldMan_1.png" alt=""><figcaption></figcaption></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <br>
+
+                <div class="part12">
+                    <h1 id="part12">Diffusion Models From Scratch!</h1>
+                    <p>
+                        In this part, we write our own sampling loops using the DeepFloyd IF diffusion model to denoise input images, and generate new images, including image-to-image translations, inpainting/edits, visual anagrams, and hybrid images.
+                    </p>
+                </div>
+                
+                <div class="part13">
+                    <h2 id="part13">Training a Single-Step Diffusion Model</h2>
+                    <h3 id="part13">Implementing the UNet</h3>
+                    <p>
+                        We begin by setting up our unconditional U-Net based off of the following architecture, with the operations defined as below:
+                    </p>
+                    <div class="img-table">
+                        <img height=450px src="./images/unet_unconditional_arch.png">
+                    </div>
+                    <div class="img-table">
+                        <img height=450px src="./images/atomic_ops_unet.png">
+                    </div>
+                </div>
+                <br>
+
+                <div class="part14">
+                    <h3 id="part14">Using the UNet to Train a Denoiser</h3>
+                    <p>
+                        Once we have our U-Net set up, we can set out to solve the denoising problem, where we attempt to denoise images with certain levels of noise.
+                    </p>
+
+                    <p>
+                        We aim to denoise the MNIST dataset. 
+                        We use the following equation to noise images, where z is our noisy image, x is our original image, epsilon is Gaussian-distributed random noise, and sigma is a scalar that determines how much noise to add.
+                    </p>
+
+                    <div class="img-table">
+                        <img src="./images/noise_eqt.png">
+                    </div>
+
+                    <p>
+                        Pictured below is the noising process on sigmas in the following range: 0, 0.2, 0.4, 0.5, 0.6, 0.8, 1.0.
+                    </p>
+
+                    <div class="img-table">
+                        <table>
+                            <!-- <thead>
+                                <tr>
+                                    <th>Original Image</th>
+                                </tr>
+                            </thead> -->
+                            <tbody>
+                                <tr>
+                                    <td><img height="100px" src="./images/p212_noise1.png" alt="Original Image"><figcaption></figcaption></td>
+                                </tr>
+                                <tr>
+                                    <td><img height="100px" src="./images/p212_noise8.png" alt="Original Image"><figcaption></figcaption></td>
+                                </tr>
+                                <tr>
+                                    <td><img height="100px" src="./images/p212_noise0.png" alt="Original Image"><figcaption></figcaption></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- <div class="img-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Original Image</th>
+                                    <th>Noise Level 250</th>
+                                    <th>Noise Level 500</th>
+                                    <th>Noise Level 750</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><img src="./images/og_camp.png" alt="Original Image"><figcaption></figcaption></td>
+                                    <td><img src="./images/camp_t250_noise.png" alt="Campanille Noise 250"><figcaption></figcaption></td>
+                                    <td><img src="./images/camp_t500_noise.png" alt="Campanille Noise 500"><figcaption></figcaption></td>
+                                    <td><img src="./images/camp_t750_noise.png" alt="Campanille Noise 750"><figcaption></figcaption></td>
                                 </tr>
                             </tbody>
                         </table>
                     </div> -->
                 </div>
                 <br>
-                
-                <div class="part2" id="part2">
-                    <h3>One-Step Denoising</h3>
-                    <p>
-                        lorem ipsum dolor sit amet, consectetur adipiscing elit
-                    </p>
-                    <!-- <table>
-                        <tr>
-                            <td>
-                                <img src="./images/homography_matrix.png" alt="Homography matrix">
-                            </td>
-                        </tr>
-                    </table> -->
-                    
-                </div>
-                <br>
 
-                <div class="part3" id="part3">
-                    <h3>Iterative Denoising</h3>
-                    
+                <div class="part15">
+                    <h3 id="part15">Training</h3>
                     <p>
-                        lorem ipsum dolor sit amet, consectetur adipiscing elit
+                        We now train the U-Net to denoise images with sigma=0.5. We use a batch size of 256, 128 hidden dimensions, and train for 5 epochs. 
                     </p>
-                    <!-- <div class="img-table">
+                    <p>
+                        Below is the loss curve, along with some results at epochs 1 and 5 respectively.
+                    </p>
+                    <div class="img-table">
+                        <img height=450px src="./images/p211_trainingLoss.png">
+                    </div>
+                    
+                    <div class="img-table">
                         <table>
-                            <thead>
+                            <!-- <thead>
                                 <tr>
-                                    <th>Before warping:</th>
-                                    <th>After warping:</th>
+                                    <th>Original Image</th>
                                 </tr>
-                            </thead>
+                            </thead> -->
                             <tbody>
                                 <tr>
-                                    <td>
-                                        <img src="./images/left_smol.jpg" alt="Actual left image used in program">
-                                    </td>
-                                    <td>
-                                        <img src="./images/left_to_center.jpg" alt="Left image after">
-                                    </td>
+                                    <td><img src="./images/p212_e1_prenoise.png" alt="Original Image"><figcaption></figcaption></td>
+                                </tr>
+                                <tr>
+                                    <td><img src="./images/p212_e1_postnoise.png" alt="Original Image"><figcaption></figcaption></td>
+                                </tr>
+                                <tr>
+                                    <td><img src="./images/p212_e1_preds.png" alt="Original Image"><figcaption></figcaption></td>
+                                </tr>
+                                <tr>
+                                    <td><img src="./images/p212_e5_preds.png" alt="Original Image"><figcaption></figcaption></td>
                                 </tr>
                             </tbody>
                         </table>
-                    </div>     -->
+                    </div>
+                </div>
+                <br>
+
+                <div class="part16">
+                    <h3 id="part16">Out-of-Distribution Testing</h3>
+                    <p>
+                        We now see how well the model works to denoise images with sigmas other than 0.5. Below are some results, with denoising results from noised images with the following sigma values in the following range: 0, 0.2, 0.4, 0.5, 0.6, 0.8, 1.0.
+                    </p>
+
+                    <div class="img-table">
+                        <table>
+                            <!-- <thead>
+                                <tr>
+                                    <th>Original Image</th>
+                                </tr>
+                            </thead> -->
+                            <tbody>
+                                <tr>
+                                    <td><img src="./images/p212_noise1.png" alt="Original Image"><figcaption></figcaption></td>
+                                </tr>
+                                <tr>
+                                    <td><img src="./images/p212_denoise1.png" alt="Original Image"><figcaption></figcaption></td>
+                                </tr>
+                                <tr>
+                                    <td><img src="./images/p212_noise8.png" alt="Original Image"><figcaption></figcaption></td>
+                                </tr>
+                                <tr>
+                                    <td><img src="./images/p212_denoise8.png" alt="Original Image"><figcaption></figcaption></td>
+                                </tr>
+                                <tr>
+                                    <td><img src="./images/p212_noise0.png" alt="Original Image"><figcaption></figcaption></td>
+                                </tr>
+                                <tr>
+                                    <td><img src="./images/p212_denoise0.png" alt="Original Image"><figcaption></figcaption></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
                 <br>
                 
-                <div class="part4" id="part4">
-                    <h3>Diffusion Model Sampling</h3>
+                <div class="part18">
+                    <h2 id="part18">Training a Diffusion Model</h2>
+                    <h3 id="part18">Adding Time Conditioning to UNet</h3>
                     <p>
-                        lorem ipsum dolor sit amet, consectetur adipiscing elit
-                    </p>  
-                </div>
-                <br>
-
-                <div class="part5" id="part5">
-                    <h3>Classifer-Free Guidance</h3>
-                    <p>
-                        lorem ipsum dolor sit amet, consectetur adipiscing elit
-                    </p>  
-                </div>
-                <br>
-
-                <div class="part12" id="part12">
-                    <h3>Reflection</h3>
-                    <p>
-                        Fun things are fun (filler text).
+                        We will now train a U-Net to Iteratively denoise an image, implementing <a href="https://arxiv.org/abs/2006.11239">DDPM</a>.
                     </p>
-                    
+                    <p>
+                        We will incorporate time-conditioning by injecting scalar t values into our U-Net using the following architecture, with new operations defined as below:
+                    </p>
+                    <div class="img-table">
+                        <img height=450px src="./images/tc_conditional_arch.png">
+                    </div>
+                    <div class="img-table">
+                        <img height=150px src="./images/fc_long.png">
+                    </div>
+                </div>
+                <br>
+
+                <div class="part18">
+                    <h3 id="part18">Training the UNet</h3>
+                    <p>
+                        We will now train the U-Net with respect to the following algorithm:
+                    </p>
+                    <div class="img-table">
+                        <img height=200px src="./images/algo1_t_only.png">
+                    </div>
+                    <p>
+                        We train for 20 epochs, with a batch size of 128, 64 hidden channels, using MSE loss with an Adam optimizer with a learning rate of 1e-3. Pictured below is the training loss curve for the model:
+                    </p>
+                    <div class="img-table">
+                        <img src="./images/p222_trainingLossPlot.png">
+                    </div>
+                </div>
+                <br>
+
+                <div class="part19">
+                    <h3 id="part19">Sampling from the UNet</h3>
+                    <p>
+                        Once the U-Net is trained, we can sample from it in accordance with the algorithm below:
+                    </p>
+                    <div class="img-table">
+                        <img height=200px src="./images/algo2_t_only.png">
+                    </div>
+                    <p>
+                        We train for 20 epochs, with a batch size of 128, 64 hidden channels, using MSE loss with an Adam optimizer with a learning rate of 1e-3. Pictured below is the training loss curve for the model:
+                    </p>
+                    <p>
+                        Below are some results from sampling the model at epochs 5 and 20, respectively.
+                    </p>
+                    <div class="img-table">
+                        <img src="./images/">
+                    </div>
+                    <div class="img-table">
+                        <img src="./images/">
+                    </div>
                 </div>
                 <br>
 

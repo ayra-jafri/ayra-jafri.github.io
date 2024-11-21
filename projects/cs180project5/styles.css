@@ -133,6 +133,8 @@ h1 {
     padding: 0.25em 0;
     background-color: var(--system-color-quote-background);
     font-size: 14px;
+    overflow-y: scroll;
+    max-height: 100vh;
 }
 
 .sidebar ul {
@@ -170,7 +172,7 @@ h1 {
     /* align-items: center; */
     padding: 2em 4em;
     margin: auto;
-    width: 90%
+    width: 80%
 }
 
 .img-table {
@@ -199,7 +201,7 @@ h1 {
 table {
     border-spacing: 1em 1em;
     overflow: scroll;
-    width: 80%;
+    /* width: 70%; */
 }
 
 td {
@@ -283,7 +285,7 @@ footer {
         align-items: center; */
         text-align: center;
         /* padding: 0 0.5vw; */
-        
+        max-height: 40vh;
     }
 
     .main-container{

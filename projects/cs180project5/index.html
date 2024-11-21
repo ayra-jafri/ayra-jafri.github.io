@@ -694,7 +694,7 @@
                 
                 <div class="part13">
                     <h2 id="part13">Training a Single-Step Diffusion Model</h2>
-                    <h3 id="part13">Implementing the UNet</h3>
+                    <h3 id="part14">Implementing the UNet</h3>
                     <p>
                         We begin by setting up our unconditional U-Net based off of the following architecture, with the operations defined as below:
                     </p>
@@ -707,8 +707,8 @@
                 </div>
                 <br>
 
-                <div class="part14">
-                    <h3 id="part14">Using the UNet to Train a Denoiser</h3>
+                <div class="part15">
+                    <h3 id="part15">Using the UNet to Train a Denoiser</h3>
                     <p>
                         Once we have our U-Net set up, we can set out to solve the denoising problem, where we attempt to denoise images with certain levels of noise.
                     </p>
@@ -770,8 +770,8 @@
                 </div>
                 <br>
 
-                <div class="part15">
-                    <h3 id="part15">Training</h3>
+                <div class="part16">
+                    <h3 id="part16">Training</h3>
                     <p>
                         We now train the U-Net to denoise images with sigma=0.5. We use a batch size of 256, 128 hidden dimensions, and train for 5 epochs. 
                     </p>
@@ -808,8 +808,8 @@
                 </div>
                 <br>
 
-                <div class="part16">
-                    <h3 id="part16">Out-of-Distribution Testing</h3>
+                <div class="part17">
+                    <h3 id="part17">Out-of-Distribution Testing</h3>
                     <p>
                         We now see how well the model works to denoise images with sigmas other than 0.5. Below are some results, with denoising results from noised images with the following sigma values in the following range: 0, 0.2, 0.4, 0.5, 0.6, 0.8, 1.0.
                     </p>
@@ -848,7 +848,7 @@
                 
                 <div class="part18">
                     <h2 id="part18">Training a Diffusion Model</h2>
-                    <h3 id="part18">Adding Time Conditioning to UNet</h3>
+                    <h3 id="part19">Adding Time Conditioning to UNet</h3>
                     <p>
                         We will now train a U-Net to Iteratively denoise an image, implementing <a href="https://arxiv.org/abs/2006.11239">DDPM</a>.
                     </p>
@@ -864,8 +864,8 @@
                 </div>
                 <br>
 
-                <div class="part18">
-                    <h3 id="part18">Training the UNet</h3>
+                <div class="part20">
+                    <h3 id="part20">Training the UNet</h3>
                     <p>
                         We will now train the U-Net with respect to the following algorithm:
                     </p>
@@ -873,7 +873,7 @@
                         <img height=200px src="./images/algo1_t_only.png">
                     </div>
                     <p>
-                        We train for 20 epochs, with a batch size of 128, 64 hidden channels, using MSE loss with an Adam optimizer with a learning rate of 1e-3. Pictured below is the training loss curve for the model:
+                        We train for 20 epochs, with a batch size of 128, 64 hidden channels, using MSE loss with an Adam optimizer with a learning rate of 1e-3. We also use a exponential learning rate decay scheduler, with a gamma of 0.1 ^ (1 / epochs). Pictured below is the training loss curve for the model:
                     </p>
                     <div class="img-table">
                         <img src="./images/p222_trainingLossPlot.png">
@@ -881,8 +881,8 @@
                 </div>
                 <br>
 
-                <div class="part19">
-                    <h3 id="part19">Sampling from the UNet</h3>
+                <div class="part21">
+                    <h3 id="part21">Sampling from the UNet</h3>
                     <p>
                         Once the U-Net is trained, we can sample from it in accordance with the algorithm below:
                     </p>
@@ -896,13 +896,99 @@
                         Below are some results from sampling the model at epochs 5 and 20, respectively.
                     </p>
                     <div class="img-table">
-                        <img src="./images/">
+                        <table>
+                            <tbody>
+                                <tr><img src="./images/p223_e5_samps.png"></tr>
+                                <tr><img src="./images/p223_e20_samps.png"></tr>
+                            </tbody>
+                        </table>
+                        <!-- <img src="./images/p223_e5_samps.png"> -->
                     </div>
+                    <!-- <div class="img-table">
+                        <img src="./images/p223_e20_samps.png">
+                    </div> -->
+                </div>
+                <br>
+
+                <div class="part22">
+                    <h3 id="part22">Adding Class-Conditioning to UNet</h3>
+                    <p>
+                        To improve our results and allow for more control for image generation, we add class conditioning to the model. In this case, we will condition the U-Net on the classes 0 through 9 (one class per digit).
+                    </p>
+                    <p>
+                        This requires adding in two more fully connected blocks to our architecture to accomodate c, which can either be a single label or a vector of labels (which will be one-hot encoded).
+                        We apply dropout to the c vector, with a rate of 0.1.
+                    </p>
+                    <p>
+                        The training algorithm is similar to the one seen in time-conditioning, except we take the labels into consideration.
+                    </p>
                     <div class="img-table">
-                        <img src="./images/">
+                        <img height=200px src="./images/algo3_c.png">
+                    </div>
+                    <p>
+                        We keep the same parameters for training. Below is the loss curve for the model across 20 epochs:
+                    </p>
+                    <div class="img-table">
+                        <img src="./images/p224_trainingLossPlot.png">
                     </div>
                 </div>
                 <br>
+
+                <div class="part23">
+                    <h3 id="part23">Sampling from the Class-Conditioned UNet</h3>
+                    <p>
+                        We now sample from the model, using classifier-free guidance with a gamma value of 0.5.
+                    </p>
+                    <p>
+                        Pictured below is the algorithm used for sampling:
+                    </p>
+                    <div class="img-table">
+                        <img height=200px src="./images/algo4_c.png">
+                    </div>
+                    <p>
+                        Pictured below are results from sampling at epochs 5 and 20 respectively.
+                    </p>
+                    <div class="img-table">
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <img src="./images/p224_e5_samps.png">
+                                </tr>
+                                <tr>
+                                    <img src="./images/p224_e20_samps.png">
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                    </div>
+                    <!-- <div class="img-table">
+                        <img src="./images/p224_e20_samps.png">
+                    </div> -->
+                </div>
+                <br>
+
+                <!-- <div class="part22">
+                    <h3 id="part22">Sampling from the UNet</h3>
+                    <p>
+                        Once the U-Net is trained, we can sample from it in accordance with the algorithm below:
+                    </p>
+                    <div class="img-table">
+                        <img height=200px src="./images/algo2_t_only.png">
+                    </div>
+                    <p>
+                        We train for 20 epochs, with a batch size of 128, 64 hidden channels, using MSE loss with an Adam optimizer with a learning rate of 1e-3. Pictured below is the training loss curve for the model:
+                    </p>
+                    <p>
+                        Below are some results from sampling the model at epochs 5 and 20, respectively.
+                    </p>
+                    <div class="img-table">
+                        <img src="./images/p223_e5_samps.png">
+                    </div>
+                    <div class="img-table">
+                        <img src="./images/p223_e20_samps.png">
+                    </div>
+                </div>
+                <br> -->
 
 
             </div>

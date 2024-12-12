@@ -45,7 +45,7 @@
                         In this part, I trained a small neural net with my own custom architecture to on the IMM Face Database, in order to detect nose points. 
                     </p>
                     <p>
-                        To use the IMM Face Database, I implemented a custom dataloader in PyTorch, which pre-processes the data by converting to grayscale, normalizing its values, and resizing it to 80x60. Pictured below are some samples from the dataset, with red pointss labeling the nose points: 
+                        To use the IMM Face Database, I implemented a custom dataloader in PyTorch, which pre-processes the data by converting to grayscale, normalizing its values, and resizing it to 80x60. Pictured below are some samples from the dataset, with red points labeling the nose points: 
                     </p>
                     <div class="img-table">
                         <table>
@@ -69,30 +69,33 @@
                     </div>
 
                     <p>I trained a model with the following architecture: </p>
+                    <div class="img-table">
+                        <img height=500px src="./images/noseModel.png">
+                    </div>
+                    
                     <p>Experimenting with different paramters, I used MSE loss and an Adam optimizer with learning rates of 0.001 and 0.0001, with batch sizes of 1 and 4. I trained for 25 epochs. Below are the training and validation loss plots: </p>
 
                     <div class="img-table">
                         <table>
                             <thead>
                                 <tr>
-                                    <th></th>
                                     <th>LR 0.001, Batch Size 4</th>
                                     <th>LR 0.001, Batch Size 1</th>
-                                    <th>LR 0.0001, Batch Size 1</th>
+                                    <th>LR 0.0001, Batch Size 4</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td><img src="./images/" alt=""><figcaption></figcaption></td>
-                                    <td><img src="./images/" alt=""><figcaption></figcaption></td>
-                                    <td><img src="./images/" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/part1_loss_epoch25_bsize4_lr1e-3.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/part1loss_epoch25_batch1_lr_1e-3.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/part1_epoch25_bsize4_lr1e-4.png" alt=""><figcaption></figcaption></td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
 
                     <p>
-                        The best parameters for the model were to have a learning rate of 0.001 and a batch size of 1. Pictured below are some predictions from the model, with predictions in red, and ground truth points in green:
+                        The best parameters for the model were to have a learning rate of 0.0001 and a batch size of 4. Pictured below are some predictions from the model, with predictions in red, and ground truth points in green:
                     </p>
 
                     <div class="img-table">
@@ -153,13 +156,15 @@
                     </div>
 
                     <p>Expanding upon my previous model, I used the following architecture: </p>
+                    <div class="img-table">
+                        <img height=500px src="./images/faceModel.png">
+                    </div>
                     <p>Experimenting with different paramters, I used MSE loss and an Adam optimizer with learning rates of 0.001 and 0.0001, with batch sizes of 1 and 4. I trained for 25 epochs. Below are the training and validation loss plots: </p>
 
                     <div class="img-table">
                         <table>
                             <thead>
                                 <tr>
-                                    <th></th>
                                     <th>LR 0.001, Batch Size 4</th>
                                     <th>LR 0.001, Batch Size 1</th>
                                     <th>LR 0.0001, Batch Size 1</th>
@@ -167,16 +172,16 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td><img src="./images/" alt=""><figcaption></figcaption></td>
-                                    <td><img src="./images/" alt=""><figcaption></figcaption></td>
-                                    <td><img src="./images/" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/part2_epoch50_lr1e-3_psize4.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/part2_loss_epoch50_bsize1_lr1e-3.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/part2_epoch50_bsize1_lr1e-4.png" alt=""><figcaption></figcaption></td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
 
                     <p>
-                        The best parameters for the model were a learning rate of 0.001 and a batch size of 1. Pictured below are some predictions from the model, with predictions in red, and ground truth points in green:
+                        The best parameters for the model were a learning rate of 0.001 and a batch size of 4. Pictured below are some predictions from the model, with predictions in red, and ground truth points in green:
                     </p>
 
                     <div class="img-table">
@@ -191,16 +196,18 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td><img src="./images/" alt=""><figcaption></figcaption></td>
-                                    <td><img src="./images/" alt=""><figcaption></figcaption></td>
-                                    <td><img src="./images/" alt=""><figcaption></figcaption></td>
-                                    <td><img src="./images/" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/part2_goodPred_2.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/part2_predGood1.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/part2_badPred_1.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/part2_badPred_2.png" alt=""><figcaption></figcaption></td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
 
-
+                    <p>
+                        Pictured below are the filters from the neural net:
+                    </p>
 
                     
                 </div>
@@ -208,59 +215,12 @@
 
                 <div class="part3" id="part3">
                     <h2>Training with a Larger Dataset</h2>
-                    <!-- <p>
-                        We now use the pre-trained diffusion model to denoise the image with text conditioning, using the prompt embedding "a high quality photo".
-                    </p>
-                    <div class="img-table">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Original Image</th>
-                                    <th>One-Step Denoise at Level 250</th>
-                                    <th>One-Step Denoise at Level 500</th>
-                                    <th>One-Step Denoise at Level 750</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td><img src="./images/og_camp.png" alt="Original Image"><figcaption></figcaption></td>
-                                    <td><img src="./images/camp_onestepDenoise_t250.png" alt="Campanille denoise Gaussian 250"><figcaption></figcaption></td>
-                                    <td><img src="./images/camp_onestepDenoise_t500.png" alt="Campanille denoise Gaussian 500"><figcaption></figcaption></td>
-                                    <td><img src="./images/camp_onestepDenoise_t750.png" alt="Campanille denoise Gaussian 750"><figcaption></figcaption></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div> -->
+                    
                 <br>
                 
                 <div class="part4" id="part4">
                     <h2>Pixelwise Classification</h2>
-                    <!-- <p>
-                        We now iteravely denoise the image with strided timesteps, starting from 1000 iterations and using a stride of 30.
-                    </p>  
-                    <div class="img-table">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Original Image</th>
-                                    <th>Noise Level 90</th>
-                                    <th>Noise Level 240</th>
-                                    <th>Noise Level 540</th>
-                                    <th>Noise Level 690</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td><img src="./images/og_camp.png" alt="Original Image"><figcaption></figcaption></td>
-                                    <td><img src="./images/p14_camp_iterDenoise_t90.png" alt=""><figcaption></figcaption></td>
-                                    <td><img src="./images/p14_camp_iterDenoise_t240.png" alt=""><figcaption></figcaption></td>
-                                    <td><img src="./images/p14_camp_iterDenoise_t540.png" alt=""><figcaption></figcaption></td>
-                                    <td><img src="./images/p14_camp_iterDenoise_t690.png" alt=""><figcaption></figcaption></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div> -->
+                
                     
 
                 </div>
@@ -268,37 +228,14 @@
 
                 <div class="part5" id="part5">
                     <h2>Bells & Whistles</h2>
-                    <!-- <p>
-                        We now show use iterave denoising to generate images from pure noise. Below are some results:
-                    </p>  
-                    <div class="img-table">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Sample 1</th>
-                                    <th>Sample 2</th>
-                                    <th>Sample 3</th>
-                                    <th>Sample 4</th>
-                                    <th>Sample 5</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td><img src="./images/p15_img1.png" alt=""><figcaption></figcaption></td>
-                                    <td><img src="./images/p15_img2.png" alt=""><figcaption></figcaption></td>
-                                    <td><img src="./images/p15_img3.png" alt=""><figcaption></figcaption></td>
-                                    <td><img src="./images/p15_img4.png" alt=""><figcaption></figcaption></td>
-                                    <td><img src="./images/p15_img5.png" alt=""><figcaption></figcaption></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div> -->
+                    
                 </div>
                 <br>
 
 
             </div>
         </div>
+    </div>
     </div>
     
     <footer>

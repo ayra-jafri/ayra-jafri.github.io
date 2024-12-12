@@ -170,9 +170,9 @@ h1 {
     flex-direction: column;
     justify-content: center; */
     /* align-items: center; */
-    padding: 2em 0em;
-    margin: 0px 50px;
-    width: 60%
+    padding: 2em 4em;
+    margin: auto;
+    width: 80%
 }
 
 .img-table {
@@ -221,17 +221,12 @@ img {
 
 td img {
     /* width: 100%; */
-    height: 300px;
+    height: 200px;
     /* height: auto; */
     /* min-width: 300px;
     max-height: 300px; */
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(44, 45, 47, 0.25);
-}
-
-#vertical-img {
-    /* width: 100%; */
-    height: 500px;
 }
 
 .blurMe {
@@ -271,18 +266,6 @@ footer {
     .content {
         flex-direction: column;
         align-items: center;
-    }
-
-
-    .main-content {
-        /* border: 1px solid var(--system-color-main-background); */
-        /* display: flex;
-        flex-direction: column;
-        justify-content: center; */
-        /* align-items: center; */
-        padding: 2em 4em;
-        margin: auto;
-        width: 80%
     }
 
     .head-titles {

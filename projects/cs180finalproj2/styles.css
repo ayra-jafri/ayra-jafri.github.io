@@ -190,6 +190,10 @@ h1 {
     width: 75%;
 } */
 
+#vertical-img {
+    height: 400px;
+}
+
 .eqt {
     font-family: monospace;
     font-weight: 600;

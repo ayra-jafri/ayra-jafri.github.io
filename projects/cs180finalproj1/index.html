@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CS 180 Final Project - Facial Keypoint Detection</title>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+    <div class="main-container">
+        <div class="heading">
+            <div class="head-titles">
+                <div>
+                    <h1>CS 180</h1>
+                    <h1>Final Project:</h1>
+                    <h2>Facial Keypoint Detection with Neural Nets</h2>
+                </div>
+                <h3>December 13, 2024</h3>
+                <h3>Ayra Jafri</h3>
+            </div>
+            <div class="sidebar">
+                <h3>Table of Contents</h3>
+                <ul class="toc">
+                    <li><a href="#intro">0.  Project Overview</a></li>
+                    <li><a href="#part1">Part 1: Nose Tip Detection</a></li>
+                    <li><a href="#part2">Part 2:  Full Facial Keypoints Detection</a></li>
+                    <li><a href="#part3">Part 3:  Training with a Larger Dataset</a></li>
+                    <li><a href="#part4">Part 4:  Pixelwise Classification</a></li>
+                    <li><a href="#part5">Bells & Whistles</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="content">
+            <div class="main-content">
+                <div class="intro">
+                    <h1 id="intro">Project Overview</h1>
+                    <p>
+                        In this project, we explore the use of neural networks for facial keypoint detection, using our own smaller, custom architecture, and larger pre-established architectures.
+                    </p>
+                </div>
+
+                <div class="part1">
+                    <h2 id="part1">Part 1: Nose Tip Detection</h2>
+                    <p>
+                        In this part, I trained a small neural net with my own custom architecture to on the IMM Face Database, in order to detect nose points. 
+                    </p>
+                    <p>
+                        To use the IMM Face Database, I implemented a custom dataloader in PyTorch, which pre-processes the data by converting to grayscale, normalizing its values, and resizing it to 80x60. Pictured below are some samples from the dataset, with red pointss labeling the nose points: 
+                    </p>
+                    <div class="img-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Sample 1</th>
+                                    <th>Sample 2</th>
+                                    <th>Sample 3</th>
+                                    <th>Sample 4</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><img src="./images/samp_nose_1.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/samp_nose_2.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/samp_nose_3.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/samp_nose_4.png" alt=""><figcaption></figcaption></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <p>I trained a model with the following architecture: </p>
+                    <p>Experimenting with different paramters, I used MSE loss and an Adam optimizer with learning rates of 0.001 and 0.0001, with batch sizes of 1 and 4. I trained for 25 epochs. Below are the training and validation loss plots: </p>
+
+                    <div class="img-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>LR 0.001, Batch Size 4</th>
+                                    <th>LR 0.001, Batch Size 1</th>
+                                    <th>LR 0.0001, Batch Size 1</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><img src="./images/" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/" alt=""><figcaption></figcaption></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <p>
+                        The best parameters for the model were to have a learning rate of 0.001 and a batch size of 1. Pictured below are some predictions from the model, with predictions in red, and ground truth points in green:
+                    </p>
+
+                    <div class="img-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Good Prediction</th>
+                                    <th>Good Prediction</th>
+                                    <th>Poor Prediction</th>
+                                    <th>Poor Prediction</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><img src="./images/part1_actualPred_2_good.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/part1_actualPred_5_good.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/part1_actualPred_7_bad.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/part1_actualPred_8_bad.png" alt=""><figcaption></figcaption></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <p>
+                        As seen above, the model does well when predicting nose points on a front-facing facial image, but performs more poorly when trying to predict nose points on 3/4 (turned to the left or right) facial images.
+                        This may be because of the higher variance in nose point positions in 3/4's images compared to front-facing images.
+                    </p>
+                </div>
+                <br>
+                
+                <div class="part2" id="part2">
+                    <h2>Part 2: Full Facial Keypoints Detection</h2>
+                    <p>
+                        Since we are now predicting the entire set of facial keypoints across images, we work with larger images of size 240x180. We also implement data augmentation with our own custom transforms, allowing for random amounts of color jitter, rotation, and shifts across images in the dataset.
+                    </p>
+                    <p>
+                        Pictured below are some samples from the augmented dataset:
+                    </p>
+                    <div class="img-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Sample 1</th>
+                                    <th>Sample 2</th>
+                                    <th>Sample 3</th>
+                                    <th>Sample 4</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><img src="./images/part2_customDataloader_1.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/part2_customDataloader_2.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/part2_customDataloader_3.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/part2_customDataloader_4.png" alt=""><figcaption></figcaption></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <p>Expanding upon my previous model, I used the following architecture: </p>
+                    <p>Experimenting with different paramters, I used MSE loss and an Adam optimizer with learning rates of 0.001 and 0.0001, with batch sizes of 1 and 4. I trained for 25 epochs. Below are the training and validation loss plots: </p>
+
+                    <div class="img-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>LR 0.001, Batch Size 4</th>
+                                    <th>LR 0.001, Batch Size 1</th>
+                                    <th>LR 0.0001, Batch Size 1</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><img src="./images/" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/" alt=""><figcaption></figcaption></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <p>
+                        The best parameters for the model were a learning rate of 0.001 and a batch size of 1. Pictured below are some predictions from the model, with predictions in red, and ground truth points in green:
+                    </p>
+
+                    <div class="img-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Good Prediction</th>
+                                    <th>Good Prediction</th>
+                                    <th>Poor Prediction</th>
+                                    <th>Poor Prediction</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><img src="./images/" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/" alt=""><figcaption></figcaption></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+
+
+                    
+                </div>
+                <br>
+
+                <div class="part3" id="part3">
+                    <h2>Training with a Larger Dataset</h2>
+                    <!-- <p>
+                        We now use the pre-trained diffusion model to denoise the image with text conditioning, using the prompt embedding "a high quality photo".
+                    </p>
+                    <div class="img-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Original Image</th>
+                                    <th>One-Step Denoise at Level 250</th>
+                                    <th>One-Step Denoise at Level 500</th>
+                                    <th>One-Step Denoise at Level 750</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><img src="./images/og_camp.png" alt="Original Image"><figcaption></figcaption></td>
+                                    <td><img src="./images/camp_onestepDenoise_t250.png" alt="Campanille denoise Gaussian 250"><figcaption></figcaption></td>
+                                    <td><img src="./images/camp_onestepDenoise_t500.png" alt="Campanille denoise Gaussian 500"><figcaption></figcaption></td>
+                                    <td><img src="./images/camp_onestepDenoise_t750.png" alt="Campanille denoise Gaussian 750"><figcaption></figcaption></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div> -->
+                <br>
+                
+                <div class="part4" id="part4">
+                    <h2>Pixelwise Classification</h2>
+                    <!-- <p>
+                        We now iteravely denoise the image with strided timesteps, starting from 1000 iterations and using a stride of 30.
+                    </p>  
+                    <div class="img-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Original Image</th>
+                                    <th>Noise Level 90</th>
+                                    <th>Noise Level 240</th>
+                                    <th>Noise Level 540</th>
+                                    <th>Noise Level 690</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><img src="./images/og_camp.png" alt="Original Image"><figcaption></figcaption></td>
+                                    <td><img src="./images/p14_camp_iterDenoise_t90.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p14_camp_iterDenoise_t240.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p14_camp_iterDenoise_t540.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p14_camp_iterDenoise_t690.png" alt=""><figcaption></figcaption></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div> -->
+                    
+
+                </div>
+                <br>
+
+                <div class="part5" id="part5">
+                    <h2>Bells & Whistles</h2>
+                    <!-- <p>
+                        We now show use iterave denoising to generate images from pure noise. Below are some results:
+                    </p>  
+                    <div class="img-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Sample 1</th>
+                                    <th>Sample 2</th>
+                                    <th>Sample 3</th>
+                                    <th>Sample 4</th>
+                                    <th>Sample 5</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><img src="./images/p15_img1.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p15_img2.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p15_img3.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p15_img4.png" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/p15_img5.png" alt=""><figcaption></figcaption></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div> -->
+                </div>
+                <br>
+
+
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="copyright">made by ayra jafri</div>
+        <div><a href="/index.html">return home</a></div>
+    </footer>
+</body>
+</html>

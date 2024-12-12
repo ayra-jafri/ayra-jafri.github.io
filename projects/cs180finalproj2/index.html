@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CS 180 Final Project - Lightfield Cameras</title>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+    <div class="main-container">
+        <div class="heading">
+            <div class="head-titles">
+                <div>
+                    <h1>CS 180</h1>
+                    <h1>Final Project:</h1>
+                    <h2>Lightfield Cameras</h2>
+                </div>
+                <h3>December 13, 2024</h3>
+                <h3>Ayra Jafri</h3>
+            </div>
+            <div class="sidebar">
+                <h3>Table of Contents</h3>
+                <ul class="toc">
+                    <li><a href="#intro">0.  Project Overview</a></li>
+                    <li><a href="#part1">Part 1: Depth Refocusing</a></li>
+                    <li><a href="#part2">Part 2:  Aperture Adjustment</a></li>
+                    <!-- <li><a href="#part5">Bells & Whistles</a></li> -->
+                </ul>
+            </div>
+        </div>
+        <div class="content">
+            <div class="main-content">
+                <div class="intro">
+                    <h1 id="intro">Project Overview</h1>
+                    <p>
+                        In this project, we reproduce complex imaging effects such as depth refocusing and aperture adjustment using real lightfield data, produced from the <a href="http://lightfield.stanford.edu/lfs.html">Stanford Light Field Archive</a>. 
+                        This data captures 289 views over a 17 by 17 grid using gantry cameras, with each image storing its position relative to the camera which captured the image, and its UV coordinate.
+                        With just the image, its corresponding camera position, and UV coordinates, we can reproduce these effects.
+                    </p>
+                </div>
+
+                <div class="part1">
+                    <h2 id="part1">Part 1: Depth Refocusing</h2>
+                    <p>
+                        In this part, we will mimic depth refocusing using elementary techniques, such as shifting and averaging, over the lightfield image dataset.
+                         In order to mimic depth refocusing, we will select an image to be the "center" of our data 
+                         (typically, we choose the image in the center of the 17 by 17 grid, so the image at posiiton (8, 8)).
+                         We then iterate over all images in the dataset, and shift them relative to the (u, v) coordinates of the center image, implementing a depth scaling factor.
+                         By adjusting this depth scaling factor, we can mimic the effects of refocusing an image across varying depths. 
+                         We add all shifted images together and average them in order to acheive this effect for a given depth scaling factor.
+                         By iterating over different depth scaling factors, we can generate images to create a gif showcasing a camera refocusing from the front of a scene to the back.
+                    </p>
+                    <p>
+                        Pictured below are scenes from the lightfield datasets averaged at different depth factors (labeled as 'd'), and gifs showcasing the refocusing effect:
+                    </p>
+                    <div class="img-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Chess Scene, d = -0.5</th>
+                                    <th>Chess Scene, d = -0.2</th>
+                                    <th>Chess Scene, d = 0</th>
+                                    <th>Chess Scene, d = 0.1</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><img src="./images/chess_lightfield_01_depth_-0.5.jpg" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/chess_lightfield_04_depth_-0.2.jpg" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/chess_lightfield_06_depth_0.0.jpg" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/chess_lightfield_07_depth_0.1.jpg" alt=""><figcaption></figcaption></td>
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="img-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>From d = -0.5 to d = 0.3, step size = 0.1</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <img height=400px src="./images/chess_depth_bounce.gif">
+                                    </td>
+                                </tr>
+                            </tbody>
+                            
+                        </table>
+                    </div>
+
+                    <div class="img-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Lego Gantry Scene, d = 0.5</th>
+                                    <th>Lego Gantry Scene, d = 0.2</th>
+                                    <th>Lego Gantry Scene, d = 0</th>
+                                    <th>Lego Gantry Scene, d = -4.5</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><img id="vertical-img" src="./images/gantry_lightfield11_depth_0.5.jpg" alt=""><figcaption></figcaption></td>
+                                    <td><img id="vertical-img" src="./images/gantry_lightfield08_depth_0.2.jpg" alt=""><figcaption></figcaption></td>
+                                    <td><img id="vertical-img" src="./images/07_gantry_lightfield06_depth_0.0.jpg" alt=""><figcaption></figcaption></td>
+                                    <td><img id="vertical-img" src="./images/046_gantry_lightfield_03_depth_-4.5.jpg" alt=""><figcaption></figcaption></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="img-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>From d = 0.7 to d = -3.5, step size = 0.1, then d = -3.5 to d = -5.0, step size =  0.25</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <img id="vertical-img" height=400px src="./images/gantry_depth_bounce.gif">
+                                    </td>
+                                </tr>
+                            </tbody>
+                            
+                        </table>
+                    </div>
+
+                </div>
+                <br>
+                
+                <div class="part2" id="part2">
+                    <h2>Part 2: Aperture Adjustment</h2>
+                    <p>
+                        In this part, we mimic shifting aperture sizes, which will change the depth of field of a photo, depending on the radius of the aperture.
+                        Using the same lightfield dataset, we can create images that mimic the effects of aperture adjustment by averaging images that are within a certain radius away from our chosen center image, relative to their camera positions (not their UV coordinates).
+                        Note that we use the same averaging technique as above, but we limit what images we average based on the above condition.
+                        A larger radius will mimic a larger aperture size, resulting in more blurring around parts of the image not in focus, while a smaller radius will result in more of the image being in focus.
+                    </p>
+                    <p>
+                        Pictured below are some results, along with gifs showcasing aperture adjustment:
+                    </p>
+                    <div class="img-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Chess Scene, r = 0</th>
+                                    <th>Chess Scene, r = 4</th>
+                                    <th>Chess Scene, r = 8</th>
+                                    <th>Chess Scene, r = 10</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><img src="./images/new_chess_lightfield_aperture_radius0.jpg" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/new_chess_lightfield_aperture_radius4.jpg" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/new_chess_lightfield_aperture_radius8.jpg" alt=""><figcaption></figcaption></td>
+                                    <td><img src="./images/chess_lightfield_06_depth_0.0.jpg" alt=""><figcaption></figcaption></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="img-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>From r = 0 to r = 8, step size = 1</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <img height=400px src="./images/chess_aperture_bounce.gif">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="img-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Gantry Scene, r = 0</th>
+                                    <th>Gantry Scene, r = 4</th>
+                                    <th>Gantry Scene, r = 8</th>
+                                    <th>Gantry Scene, r = 10</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><img id="vertical-img" src="./images/gantry_lightfield_aperture_radius_0.jpg" alt=""><figcaption></figcaption></td>
+                                    <td><img id="vertical-img" src="./images/gantry_lightfield_aperture_radius_4.jpg" alt=""><figcaption></figcaption></td>
+                                    <td><img id="vertical-img" src="./images/gantry_lightfield_aperture_radius_8.jpg" alt=""><figcaption></figcaption></td>
+                                    <td><img id="vertical-img" src="./images/gantry_lightfield_aperture_radius_10.jpg" alt=""><figcaption></figcaption></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="img-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>From r = 0 to r = 10, step size = 1</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <img id="vertical-img" height=400px src="./images/gantry_aper_bounce.gif">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    
+                </div>
+                <br>
+
+                <div>
+                    <h3>
+                        Conclusion
+                    </h3>
+                    <p>
+                        Although image generation took longer than expected (scipy's shift is very slow unfortunately) this project was very cool! I had been aware of light fields from CS 180, taught by Professor Ren, but being able to work with lightfield datasets to create very cool imaging effects was a lot of fun!
+                    </p>
+                </div>
+
+
+                <!-- <div class="part5" id="part5">
+                    <h2>Bells & Whistles</h2>
+                    
+                </div>
+                <br> -->
+
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="copyright">made by ayra jafri</div>
+        <div><a href="/index.html">return home</a></div>
+    </footer>
+</body>
+</html>
